@@ -47,28 +47,58 @@ public class BodyMap extends View {
 
 	public static final int MIN_HEIGHT = 480 ;
 
-	/** 
-	* 文本的颜色 
-	*/
+	public static final int DEAULT_INNER_MARGIN = 20 ;
+
+	private int mWidth = 0 ;
+
+	private int mHeight = 0 ;
+
+	/**
+	 * 	多边形颜色
+	 * 	int			:		mPolygenColor	
+	 * 	@since Ver 1.0
+	 */
 	private int mPolygenColor ;
 
-	/** 
-	 * 文本的大小 
+	/**
+	 * 	内边距
+	 * 	int			:		mInnerMargin	
+	 * 	@since Ver 1.0
 	 */
 	private int mInnerMargin ;
 
+	/**
+	 * 	是否绘制多边形
+	 * 	boolean			:		showPolygen	
+	 * 	@since Ver 1.0
+	 */
 	private boolean showPolygen ;
 
-	/** 
-	 * 绘制时控制文本绘制的范围 
+	/**
+	 * 	人体图绘制的矩形范围
+	 * 	Rect			:		mRect_Bound	
+	 * 	@since Ver 1.0
 	 */
 	private Rect mRect_Bound ;
 
 	private Paint mPaint ;
 
+	/**
+	 * 	人体图
+	 * 	Bitmap			:		mImage	
+	 * 	@since Ver 1.0
+	 */
 	private Bitmap mImage ;
 
-	public static final int DEAULT_INNER_MARGIN = 20 ;
+	/**
+	 *	mImage
+	 *	@param   mImage    the mImage to set
+	 */
+	public void setImage(Bitmap mImage) {
+		//TODO
+		this.mImage = mImage ;
+		requestLayout() ;
+	}
 
 	/**
 	 * 	Creates a new instance of BodyMayImageView.
@@ -136,10 +166,6 @@ public class BodyMap extends View {
 		Bitmap bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.body_male_front) ;
 		canvas.drawBitmap(bitmap , null , mRect_Bound , mPaint) ;
 	}
-
-	private int mWidth = 0 ;
-
-	private int mHeight = 0 ;
 
 	@ Override
 	protected void onMeasure(int widthMeasureSpec , int heightMeasureSpec) {
