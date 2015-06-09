@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="PolygonColor" format="color" />
+    <attr name="showPolygon" format="boolean" />
+    <attr name="innerMargin" format="dimension" />
+    <attr name="image" format="reference" />
+
+    <declare-styleable name="BodyMap">
+        <attr name="image" />
+        <attr name="PolygonColor" />
+        <attr name="showPolygon" />
+        <attr name="innerMargin" />
+    </declare-styleable>
+
+</resources>
