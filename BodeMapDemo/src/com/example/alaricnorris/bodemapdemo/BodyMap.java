@@ -10,8 +10,13 @@
 package com.example.alaricnorris.bodemapdemo ;
 
 import android.content.Context ;
+import android.graphics.Bitmap ;
+import android.graphics.BitmapFactory ;
+import android.graphics.Canvas ;
+import android.graphics.Color ;
+import android.graphics.Paint ;
 import android.util.AttributeSet ;
-import android.widget.ImageView ;
+import android.widget.FrameLayout ;
 
 /**
  *	ClassName:	BodyMayImageView
@@ -32,7 +37,7 @@ import android.widget.ImageView ;
  *	Modifications:	TODO
  *	──────────────────────────────────────────────────────────────────────────────────────────────────────
  */
-public class BodyMayImageView extends ImageView {
+public class BodyMap extends FrameLayout {
 
 	/**
 	 * 	Creates a new instance of BodyMayImageView.
@@ -40,8 +45,9 @@ public class BodyMayImageView extends ImageView {
 	 * 	@param attrs
 	 * 	@param defStyle
 	 */
-	public BodyMayImageView(Context context , AttributeSet attrs , int defStyle) {
+	public BodyMap(Context context , AttributeSet attrs , int defStyle) {
 		super(context , attrs , defStyle) ;
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -49,15 +55,30 @@ public class BodyMayImageView extends ImageView {
 	 * 	@param context
 	 * 	@param attrs
 	 */
-	private BodyMayImageView(Context context , AttributeSet attrs) {
-		this(context , attrs , 0) ;
+	public BodyMap(Context context , AttributeSet attrs) {
+		super(context , attrs) ;
 	}
 
 	/**
 	 * 	Creates a new instance of BodyMayImageView.
 	 * 	@param context
 	 */
-	private BodyMayImageView(Context context) {
-		this(context , null) ;
+	public BodyMap(Context context) {
+		super(context) ;
+	}
+
+	/**
+	 * 	(non-Javadoc)
+	 * 	@see android.view.View#onDraw(android.graphics.Canvas)
+	 */
+	@ Override
+	protected void onDraw(Canvas canvas) {
+		Paint mPaint = new Paint() ;
+		mPaint.setColor(Color.RED) ;// 设置红色
+		mPaint.setStyle(Paint.Style.FILL) ;//设置填满  
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.body_male_front) ;
+		canvas.drawBitmap(bitmap , 0 , 0 , mPaint) ;
+		canvas.drawCircle(30 , 30 , 30 , mPaint) ;
+//		super.onDraw(canvas) ;
 	}
 }
