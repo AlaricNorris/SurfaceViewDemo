@@ -5,9 +5,24 @@
 
     <com.example.alaricnorris.bodemapdemo.BodyMap
         android:id="@+id/surface"
+        android:layout_width="10dip"
+        android:layout_height="10dip"
+        android:background="#11999999"
+        android:padding="33dip"
+        android:scaleType="matrix"
+        bodymap:PolygonColor="@android:color/holo_green_light"
+        bodymap:image="@drawable/body_male_front"
+        bodymap:innerMargin="20dip"
+        bodymap:showPolygon="true" />
+
+    <com.example.alaricnorris.bodemapdemo.BodyMap
+        android:id="@+id/a"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/surface"
+        android:background="#11999999"
         android:padding="33dip"
+        android:scaleType="matrix"
         bodymap:PolygonColor="@android:color/holo_green_light"
         bodymap:image="@drawable/body_male_front"
         bodymap:innerMargin="20dip"
