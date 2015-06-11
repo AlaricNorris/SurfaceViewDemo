@@ -215,7 +215,27 @@ public class BodyMap extends ImageView {
 	 */
 	@ Override
 	protected void onDraw(Canvas canvas) {
+		try {
+			customDraw(canvas) ;
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
+		}
 		super.onDraw(canvas) ;
+	}
+
+	/**
+	 * 	customDraw:()
+	 *  ──────────────────────────────────
+	 * 	@param canvas	
+	 *	@version	Ver 1.0	
+	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
+	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
+	 * 	Modified By 	AlaricNorris		 2015-6-11下午11:17:34
+	 *	Modifications:	TODO
+	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
+	 */
+	private void customDraw(Canvas canvas) {
 		mPaint.setStyle(Paint.Style.FILL) ;//设置填满  
 		Bitmap bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.body_male_front) ;
 //		mRect_Bound.left = mWidth / 2 - mImage.getWidth() / 2 ;

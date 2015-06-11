@@ -17,12 +17,29 @@
 
     <com.example.alaricnorris.bodemapdemo.BodyMap
         android:id="@+id/a"
+        android:layout_width="300dip"
+        android:layout_height="300dip"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#11999999"
+        android:scaleType="fitCenter"
+        android:src="@drawable/body_male_front"
+        bodymap:PolygonColor="@android:color/holo_green_light"
+        bodymap:innerMargin="20dip"
+        bodymap:showPolygon="true" />
+
+    <com.example.alaricnorris.bodemapdemo.BodyMap
+        android:id="@+id/aa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/surface"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:alpha="0"
         android:background="#11999999"
-        android:padding="33dip"
-        android:scaleType="matrix"
+        android:scaleType="fitCenter"
+        android:src="@drawable/body_male_front"
+        android:visibility="gone"
         bodymap:PolygonColor="@android:color/holo_green_light"
         bodymap:image="@drawable/body_male_front"
         bodymap:innerMargin="20dip"
