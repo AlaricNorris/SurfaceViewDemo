@@ -1,7 +1,7 @@
 /**
  * 	BodyMayImageView.java
  * 	com.example.alaricnorris.bodemapdemo
- * 	Function： 	TODO 
+ * 	Function： 	人体视图组件 
  *   ver     date      		author
  * 	──────────────────────────────────
  *   		 2015-6-9 		20144L151
@@ -11,6 +11,9 @@ package com.example.alaricnorris.bodemapdemo ;
 
 import java.util.ArrayList ;
 import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
+import java.util.Map.Entry ;
 import android.content.Context ;
 import android.content.res.TypedArray ;
 import android.graphics.Bitmap ;
@@ -29,12 +32,10 @@ import android.util.AttributeSet ;
 import android.util.Log ;
 import android.view.MotionEvent ;
 import android.widget.ImageView ;
-import android.widget.Toast ;
 
 /**
  *	ClassName:	BodyMayImageView
- *	Function: 	TODO ADD FUNCTION
- *	Reason:	 	TODO ADD REASON
+ *	Function: 	人体视图
  *	@author   	20144L151		
  *	@contact  	Norris.sly@gmail.com
  *	@version  	Ver 1.0
@@ -85,6 +86,11 @@ public class BodyMap extends ImageView {
 	 */
 	private Rect mRect_Bound ;
 
+	/**
+	 * 	画笔
+	 * 	Paint			:		mPaint	
+	 * 	@since Ver 1.0
+	 */
 	private Paint mPaint ;
 
 	/**
@@ -92,6 +98,7 @@ public class BodyMap extends ImageView {
 	 * 	Bitmap			:		mImage	
 	 * 	@since Ver 1.0
 	 */
+	@ Deprecated
 	private Bitmap mBitmap ;
 
 	/**
@@ -116,9 +123,8 @@ public class BodyMap extends ImageView {
 		if(isInEditMode()) {
 			return ;
 		}
-		TypedArray mTypedArray = context.getTheme().obtainStyledAttributes(attrs ,
-				R.styleable.BodyMap , defStyle , 0) ;
-		int n = mTypedArray.getIndexCount() ;
+		TypedArray mTypedArray = mContext.obtainStyledAttributes(attrs , R.styleable.BodyMap) ;
+		/*int n = mTypedArray.getIndexCount() ;
 		for(int i = 0 ; i < n ; i ++ ) {
 			int attrIndex = mTypedArray.getIndex(i) ;
 			switch(attrIndex) {
@@ -146,9 +152,29 @@ public class BodyMap extends ImageView {
 							mTypedArray.getResourceId(attrIndex , 0)) ;
 					break ;
 			}
+		}*/
+		Log.i("tag" , "mImageLayersNames:" + mImageLayersNames) ;
+		Log.i("tag" , "---------------------------") ;
+		try {
+			{
+				mBitmap = BitmapFactory.decodeResource(getResources() ,
+						mTypedArray.getResourceId(R.styleable.BodyMap_image , 0)) ;
+				showDetectRegion = mTypedArray.getBoolean(R.styleable.BodyMap_showdetectRegion ,
+						false) ;
+				mDetectRegionColor = mTypedArray.getColor(R.styleable.BodyMap_detectRegionColor ,
+						Color.LTGRAY) ;
+				mImageLayersNames = getResources().getStringArray(
+						mTypedArray.getResourceId(R.styleable.BodyMap_imagesLayers , 0)) ;
+				XCoordinates = getResources().getIntArray(
+						mTypedArray.getResourceId(R.styleable.BodyMap_XCoordinates , 0)) ;
+				YCoordinates = getResources().getIntArray(
+						mTypedArray.getResourceId(R.styleable.BodyMap_YCoordinates , 0)) ;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
 		}
 		mTypedArray.recycle() ;
-		Log.i("tag" + getClass().getSimpleName() , "mImageLayersNames:" + mImageLayersNames) ;
 		mPaint = new Paint() ;
 		mPaint.setColor(mDetectRegionColor) ;
 		mPaint.setStyle(Style.FILL) ;
@@ -162,18 +188,14 @@ public class BodyMap extends ImageView {
 		try {
 			if(mImageLayersNames != null && mImageLayersNames.length > 0) {
 				for(int i = 0 ; i < mImageLayersNames.length ; i ++ ) {
-					mHashMap.put(
-							mImageLayersNames[i] ,
-							BitmapFactory.decodeResource(
-									getResources() ,
-									mTypedArray.getResourceId(
-											getResources().getIdentifier(mImageLayersNames[i] ,
-													"drawable" , mContext.getPackageName()) , 0))) ;
+					mHashMap.put(mImageLayersNames[i] , BitmapFactory.decodeResource(
+							getResources() ,
+							getResources().getIdentifier(mImageLayersNames[i] , "drawable" ,
+									mContext.getPackageName()))) ;
 				}
 			}
 		}
 		catch(Exception e) {
-			Log.e("tag" , "Exception" + e.toString()) ;
 			e.printStackTrace() ;
 		}
 		Log.i("tag" , "mHashMap" + mHashMap) ;
@@ -181,7 +203,7 @@ public class BodyMap extends ImageView {
 
 	private String[] mImageLayersNames ;
 
-	private HashMap<String , Bitmap> mHashMap ;
+	private HashMap<String , Bitmap> mHashMap = new HashMap<String , Bitmap>() ;
 
 	private String choosedImageName ;
 
@@ -207,26 +229,6 @@ public class BodyMap extends ImageView {
 	}
 
 	ArrayList<Point> mPoints = new ArrayList<Point>() ;
-	{
-		mPoints.add(new Point(147 , 1)) ;
-		mPoints.add(new Point(141 , 2)) ;
-		mPoints.add(new Point(137 , 4)) ;
-		mPoints.add(new Point(131 , 7)) ;
-		mPoints.add(new Point(123 , 20)) ;
-		mPoints.add(new Point(121 , 30)) ;
-		mPoints.add(new Point(116 , 44)) ;
-		mPoints.add(new Point(123 , 56)) ;
-		mPoints.add(new Point(126 , 64)) ;
-		mPoints.add(new Point(147 , 77)) ;
-		mPoints.add(new Point(169 , 64)) ;
-		mPoints.add(new Point(174 , 56)) ;
-		mPoints.add(new Point(179 , 44)) ;
-		mPoints.add(new Point(174 , 30)) ;
-		mPoints.add(new Point(172 , 20)) ;
-		mPoints.add(new Point(164 , 7)) ;
-		mPoints.add(new Point(158 , 4)) ;
-		mPoints.add(new Point(154 , 2)) ;
-	}
 
 	/**
 	 * 	(non-Javadoc)
@@ -321,7 +323,19 @@ public class BodyMap extends ImageView {
 
 	Region mRegion = new Region() ;
 
-	//这个函数不懂没关系，下面会细讲  
+	/**
+	 * 	drawRegion:()
+	 *  ──────────────────────────────────
+	 * 	@param canvas
+	 * 	@param rgn
+	 * 	@param paint	
+	 *	@version	Ver 1.0	
+	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
+	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
+	 * 	Modified By 	AlaricNorris		 2015-6-13下午8:36:13
+	 *	Modifications:	TODO
+	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
+	 */
 	private void drawRegion(Canvas canvas , Region rgn , Paint paint) {
 		Log.i("tag" , "drawRegion") ;
 		RegionIterator iter = new RegionIterator(rgn) ;
@@ -377,20 +391,65 @@ public class BodyMap extends ImageView {
 	@ Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO 根据事件来响应不同feedback
-		Log.i("tag" , "onTouchEvent" + event.toString()) ;
-		Log.i("tag" , "xy" + event.getX() + event.getY()) ;
-		if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-			Log.i("tag" , "yeah!!!!!!!!") ;
-			choosedImageName = mImageLayersNames[0] ;
+//		Log.i("tag" , "xy" + event.getX() + event.getY()) ;
+//		if(mRegion.contains((int) event.getX() , (int) event.getY())) {
+//			Log.i("tag" , "yeah!!!!!!!!") ;
+//			choosedImageName = mImageLayersNames[0] ;
+//		}
+//		else {
+//			choosedImageName = null ;
+//		}
+		switch(event.getAction()) {
+			case MotionEvent.ACTION_DOWN :
+			case MotionEvent.ACTION_MOVE :
+				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
+					choosedImageName = mImageLayersNames[0] ;
+				}
+				else {
+					choosedImageName = null ;
+				}
+				invalidate() ;
+				break ;
+			case MotionEvent.ACTION_UP :
+				// TODO
+				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
+					Log.i("tag" , "yeah!!!!!!!!") ;
+				}
+				choosedImageName = null ;
+				invalidate() ;
+				break ;
+			default :
+				break ;
 		}
-		else {
-			choosedImageName = null ;
-		}
-		invalidate() ;
 		return true ;
 	}
 
-	private float ScaleDegreeX ;
+	/**
+	 * 	(non-Javadoc)
+	 * 	@see android.widget.ImageView#onDetachedFromWindow()
+	 */
+	@ Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow() ;
+		try {
+			if(mHashMap != null) {
+				Iterator<Entry<String , Bitmap>> mIterator = mHashMap.entrySet().iterator() ;
+				while(mIterator.hasNext()) {
+					Map.Entry<java.lang.String , android.graphics.Bitmap> entry = (Map.Entry<java.lang.String , android.graphics.Bitmap>) mIterator
+							.next() ;
+					entry.getValue().recycle() ;
+					Log.i("tag" , "recycle") ;
+				}
+			}
+			mHashMap = null ;
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
+		}
+		Log.i("tag" , "onDetachedFromWindow") ;
+		System.gc() ;
+	}
+	/*private float ScaleDegreeX ;
 
 	private float ScaleDegreeY ;
 
@@ -398,5 +457,5 @@ public class BodyMap extends ImageView {
 	private float toDip(Context context , float pxValue) {
 		final float scale = context.getResources().getDisplayMetrics().density ;
 		return (int) (pxValue * scale + 0.5f) ;
-	}
+	}*/
 }
