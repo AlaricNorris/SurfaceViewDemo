@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="imagesLayers">
+        <item>female_front_1head</item>
+        <item>female_front_2neck</item>
+        <item>female_front_3breast</item>
+    </string-array>
+
+    <integer-array name="XCoordinates">
+        <item>135</item>
+        <item>240</item>
+        <item>232</item>
+        <item>142</item>
+    </integer-array>
+    <integer-array name="YCoordinates">
+        <item>0</item>
+        <item>0</item>
+        <item>125</item>
+        <item>125</item>
+    </integer-array>
+
     <string-array name="map_area">
         <item>map_xj</item>
         <item>map_xz</item>
     </string-array>
-    
     <string-array name="map_xj_code">
         <item>XinJiang</item>
         <item>新疆</item>
     </string-array>
-    
     <string-array name="map_xz_code">
         <item>XiZang</item>
         <item>西藏</item>

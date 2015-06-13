@@ -4,13 +4,20 @@
     <attr name="PolygonColor" format="color" />
     <attr name="showPolygon" format="boolean" />
     <attr name="innerMargin" format="dimension" />
+    <attr name="detectRegionColor" format="color" />
+    <attr name="showdetectRegion" format="boolean" />
     <attr name="image" format="reference" />
+    <attr name="imagesLayers" format="reference" />
+    <attr name="XCoordinates" format="reference" />
+    <attr name="YCoordinates" format="reference" />
 
     <declare-styleable name="BodyMap">
         <attr name="image" />
-        <attr name="PolygonColor" />
-        <attr name="showPolygon" />
-        <attr name="innerMargin" />
+        <attr name="detectRegionColor" />
+        <attr name="showdetectRegion" />
+        <attr name="imagesLayers" />
+        <attr name="XCoordinates" />
+        <attr name="YCoordinates" />
     </declare-styleable>
 
 </resources>
