@@ -390,15 +390,6 @@ public class BodyMap extends ImageView {
 //	}
 	@ Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO 根据事件来响应不同feedback
-//		Log.i("tag" , "xy" + event.getX() + event.getY()) ;
-//		if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-//			Log.i("tag" , "yeah!!!!!!!!") ;
-//			choosedImageName = mImageLayersNames[0] ;
-//		}
-//		else {
-//			choosedImageName = null ;
-//		}
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN :
 			case MotionEvent.ACTION_MOVE :
