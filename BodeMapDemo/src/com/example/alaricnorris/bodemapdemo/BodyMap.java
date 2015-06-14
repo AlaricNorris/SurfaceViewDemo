@@ -202,6 +202,7 @@ public class BodyMap extends ImageView {
 				mPath.lineTo(mPoints.get(0).x , mPoints.get(0).y) ;
 			}
 		}
+		mPath.transform(super.getImageMatrix()) ;
 		try {
 			if(mImageLayersNames != null && mImageLayersNames.length > 0) {
 				for(int i = 0 ; i < mImageLayersNames.length ; i ++ ) {
@@ -337,7 +338,6 @@ public class BodyMap extends ImageView {
 		if(mPoints == null) {
 			return ;
 		}
-		mPath.transform(super.getImageMatrix()) ;
 		mRegion.setPath(mPath , new Region(0 , 0 , getWidth() , getHeight())) ;
 		mPaint.setColor(mDetectRegionColor) ;
 		if(true) {
