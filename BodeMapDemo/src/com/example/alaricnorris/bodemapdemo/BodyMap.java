@@ -341,12 +341,13 @@ public class BodyMap extends ImageView {
 		mRegion.setPath(mPath , new Region(0 , 0 , getWidth() , getHeight())) ;
 		mPaint.setColor(mDetectRegionColor) ;
 		if(true) {
-			drawRegion(canvas , mRegion , mPaint) ;
+			Log.i("tag" , "drawDetectRegion" + mRegions) ;
 			if(mRegions != null) {
 				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
 					drawRegion(canvas , mRegions.get(i) , mPaint) ;
 				}
 			}
+			drawRegion(canvas , mRegion , mPaint) ;
 		}
 	}
 
@@ -364,7 +365,7 @@ public class BodyMap extends ImageView {
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
 	private void drawRegion(Canvas canvas , Region rgn , Paint paint) {
-		Log.i("tag" , "drawRegion") ;
+		Log.i("tag" , "drawRegion" + rgn) ;
 		RegionIterator iter = new RegionIterator(rgn) ;
 		Rect r = new Rect() ;
 		while(iter.next(r)) {
@@ -485,6 +486,22 @@ public class BodyMap extends ImageView {
 		final float scale = context.getResources().getDisplayMetrics().density ;
 		return (int) (pxValue * scale + 0.5f) ;
 	}*/
+	/** 
+	 * 根据手机的分辨率从 dp 的单位 转成为 px(像素) 
+	 */
+	public static int dip2px(Context context , float dpValue) {
+		final float scale = context.getResources().getDisplayMetrics().density ;
+		return (int) (dpValue * scale + 0.5f) ;
+	}
+
+	/** 
+	 * 根据手机的分辨率从 px(像素) 的单位 转成为 dp 
+	 */
+	public static int px2dip(Context context , float pxValue) {
+		final float scale = context.getResources().getDisplayMetrics().density ;
+		return (int) (pxValue / scale + 0.5f) ;
+	}
+
 	/**
 	 * 	mImageLayersNames
 	 * 	@return  	the mImageLayersNames
@@ -520,7 +537,8 @@ public class BodyMap extends ImageView {
 	 */
 	public void setBodyParams(BodyParams mBodyParams) {
 		if( ! isParamsValid(mBodyParams)) {
-			Toast.makeText(getContext() , "" , 0).show() ;
+			Toast.makeText(getContext() , "Invalid" , 0).show() ;
+			return ;
 		}
 		this.mBodyParams = mBodyParams ;
 		parseBodyParams(this.mBodyParams) ;
@@ -557,18 +575,20 @@ public class BodyMap extends ImageView {
 			else {
 				Path tempPath = new Path() ;
 				for(int i = 0 ; i < mArrayList.size() ; i ++ ) {
-					Log.i("tag" , "tempPath" + tempPath) ;
+					Log.i("tag" , "iter" + mArrayList.get(i).x) ;
 					if(i == 0) {
-						tempPath.moveTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
-						continue ;
+						tempPath.moveTo(px2dip(mContext , mArrayList.get(i).x) ,
+								px2dip(mContext , mArrayList.get(i).y)) ;
 					}
-					tempPath.lineTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
+					tempPath.lineTo(px2dip(mContext , mArrayList.get(i).x) ,
+							px2dip(mContext , mArrayList.get(i).y)) ;
 					if(i == mArrayList.size() - 1) {
-						tempPath.lineTo(mArrayList.get(0).x , mArrayList.get(0).y) ;
-						continue ;
+						tempPath.lineTo(px2dip(mContext , mArrayList.get(0).x) ,
+								px2dip(mContext , mArrayList.get(0).y)) ;
 					}
 				}
 				tempPath.transform(super.getImageMatrix()) ;
+				Log.i("tag" , "tempPath" + tempPath.isEmpty()) ;
 				Region tempRegion = new Region() ;
 				tempRegion.setPath(tempPath , new Region(0 , 0 , getWidth() , getHeight())) ;
 				mRegions.add(tempRegion) ;
@@ -617,7 +637,7 @@ public class BodyMap extends ImageView {
 			if(TextUtils.isEmpty(entry.getKey()) || entry.getKey().length() == 0) {
 				return false ;
 			}
-			if(entry.getKey() != inBodyParams.getLayerNames().get(index)) {
+			if( ! entry.getKey().equals(inBodyParams.getLayerNames().get(index))) {
 				return false ;
 			}
 			index ++ ;

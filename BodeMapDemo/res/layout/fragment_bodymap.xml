@@ -10,8 +10,8 @@
 
     <com.example.alaricnorris.bodemapdemo.BodyMap
         android:id="@+id/a"
-        android:layout_width="300dip"
-        android:layout_height="300dip"
+        android:layout_width="400dip"
+        android:layout_height="400dip"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"

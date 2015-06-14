@@ -60,10 +60,10 @@ public class MainActivity extends Activity {
 			Gson mGson = new Gson() ;
 			BodyParams mBodyParams = mGson
 					.fromJson(
-							"{\"layerNames\":[\"female_front_1head\",\"female_front_2neck\",\"female_front_3breast\"],\"regions\":{\"female_front_1head\":[{\"x\":135,\"y\":0},{\"x\":240,\"y\":0},{\"x\":232,\"y\":125},{\"x\":142,\"y\":125}],\"female_front_2neck\":[{\"x\":171,\"y\":120},{\"x\":165,\"y\":147},{\"x\":140,\"y\":158},{\"x\":188,\"y\":168},{\"x\":239,\"y\":161},{\"x\":210,\"y\":147},{\"x\":200,\"y\":123}]}}" ,
+							"{\"layerNames\":[\"female_front_1head\",\"female_front_2neck\"],\"regions\":{\"female_front_1head\":[{\"x\":135,\"y\":0},{\"x\":240,\"y\":0},{\"x\":232,\"y\":125},{\"x\":142,\"y\":125}],\"female_front_2neck\":[{\"x\":171,\"y\":120},{\"x\":165,\"y\":147},{\"x\":140,\"y\":158},{\"x\":188,\"y\":168},{\"x\":239,\"y\":161},{\"x\":210,\"y\":147},{\"x\":200,\"y\":123}]}}" ,
 							BodyParams.class) ;
 			Log.i("tag" , "mBodyParams" + mBodyParams) ;
-//			mBodyMap.setBodyParams(mBodyParams) ;
+			mBodyMap.setBodyParams(mBodyParams) ;
 			return rootView ;
 		}
 	}
