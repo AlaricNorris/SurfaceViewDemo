@@ -552,6 +552,7 @@ public class BodyMap extends ImageView {
 		}
 		this.mBodyParams = mBodyParams ;
 		parseBodyParams(this.mBodyParams) ;
+		invalidate();
 	}
 
 	/**
