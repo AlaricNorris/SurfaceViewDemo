@@ -4,5 +4,7 @@
     <string name="app_name">BodeMapDemo</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="test">"dog":[{"name":"Rufus","breed":"labrador"},{"name":"Marty","breed":"whippet"}]</string>
+    <string name="tttt">[{\"name\":\"Rufus\",\"breed\":\"labrador\"},{\"name\":\"Marty\","breed":"whippet"}]</string>
 
 </resources>
