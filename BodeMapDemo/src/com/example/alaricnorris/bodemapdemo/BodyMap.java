@@ -347,6 +347,14 @@ public class BodyMap extends ImageView {
 					drawRegion(canvas , mRegions.get(i) , mPaint) ;
 				}
 			}
+			if(mPaths != null) {
+				for(int i = 0 ; i < mPaths.size() ; i ++ ) {
+					Region tempRegion = new Region() ;
+					tempRegion
+							.setPath(mPaths.get(i) , new Region(0 , 0 , getWidth() , getHeight())) ;
+					drawRegion(canvas , tempRegion , mPaint) ;
+				}
+			}
 			drawRegion(canvas , mRegion , mPaint) ;
 		}
 	}
@@ -531,6 +539,8 @@ public class BodyMap extends ImageView {
 
 	private ArrayList<Region> mRegions = new ArrayList<Region>() ;
 
+	private ArrayList<Path> mPaths = new ArrayList<Path>() ;
+
 	/**
 	 *	mBodyParams
 	 *	@param   mBodyParams    the mBodyParams to set
@@ -564,6 +574,7 @@ public class BodyMap extends ImageView {
 		Iterator<Entry<String , ArrayList<Point>>> regionsIterator = inBodyParams.getRegions()
 				.entrySet().iterator() ;
 		mRegions = new ArrayList<Region>() ;
+		mPaths = new ArrayList<Path>() ;
 		int index = 0 ;
 		while(regionsIterator.hasNext()) {
 			Entry<String , ArrayList<Point>> entry = (Entry<String , ArrayList<Point>>) regionsIterator
@@ -577,17 +588,15 @@ public class BodyMap extends ImageView {
 				for(int i = 0 ; i < mArrayList.size() ; i ++ ) {
 					Log.i("tag" , "iter" + mArrayList.get(i).x) ;
 					if(i == 0) {
-						tempPath.moveTo(px2dip(mContext , mArrayList.get(i).x) ,
-								px2dip(mContext , mArrayList.get(i).y)) ;
+						tempPath.moveTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
 					}
-					tempPath.lineTo(px2dip(mContext , mArrayList.get(i).x) ,
-							px2dip(mContext , mArrayList.get(i).y)) ;
+					tempPath.lineTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
 					if(i == mArrayList.size() - 1) {
-						tempPath.lineTo(px2dip(mContext , mArrayList.get(0).x) ,
-								px2dip(mContext , mArrayList.get(0).y)) ;
+						tempPath.lineTo(mArrayList.get(0).x , mArrayList.get(0).y) ;
 					}
 				}
 				tempPath.transform(super.getImageMatrix()) ;
+				mPaths.add(tempPath) ;
 				Log.i("tag" , "tempPath" + tempPath.isEmpty()) ;
 				Region tempRegion = new Region() ;
 				tempRegion.setPath(tempPath , new Region(0 , 0 , getWidth() , getHeight())) ;

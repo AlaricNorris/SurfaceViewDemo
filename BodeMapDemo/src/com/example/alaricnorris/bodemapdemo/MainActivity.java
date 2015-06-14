@@ -10,7 +10,9 @@ import android.view.LayoutInflater ;
 import android.view.Menu ;
 import android.view.MenuItem ;
 import android.view.View ;
+import android.view.View.OnClickListener ;
 import android.view.ViewGroup ;
+import android.widget.TextView ;
 import android.os.Build ;
 
 public class MainActivity extends Activity {
@@ -47,7 +49,11 @@ public class MainActivity extends Activity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PlaceholderFragment extends Fragment implements OnClickListener {
+
+		BodyMap mBodyMap ;
+
+		TextView mTextView ;
 
 		public PlaceholderFragment() {
 		}
@@ -56,7 +62,18 @@ public class MainActivity extends Activity {
 		public View onCreateView(LayoutInflater inflater , ViewGroup container ,
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_bodymap , container , false) ;
-			BodyMap mBodyMap = (BodyMap) rootView.findViewById(R.id.a) ;
+			mBodyMap = (BodyMap) rootView.findViewById(R.id.a) ;
+			mTextView = (TextView) rootView.findViewById(R.id.text) ;
+			mTextView.setOnClickListener(this) ;
+			return rootView ;
+		}
+
+		/**
+		 * 	(non-Javadoc)
+		 * 	@see android.view.View.OnClickListener#onClick(android.view.View)
+		 */
+		@ Override
+		public void onClick(View v) {
 			Gson mGson = new Gson() ;
 			BodyParams mBodyParams = mGson
 					.fromJson(
@@ -64,7 +81,6 @@ public class MainActivity extends Activity {
 							BodyParams.class) ;
 			Log.i("tag" , "mBodyParams" + mBodyParams) ;
 			mBodyMap.setBodyParams(mBodyParams) ;
-			return rootView ;
 		}
 	}
 }
