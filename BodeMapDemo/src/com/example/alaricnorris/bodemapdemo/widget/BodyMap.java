@@ -566,7 +566,10 @@ public class BodyMap extends ImageView {
 	 */
 	public static final float scale = 2 ;
 
-	public static int computeTopx(float dpValue) {
+	public static int computeToDP(float pxValue) {
+		return (int) (pxValue / scale + 0.5f) ;
+	}
+	public static int computeToPX(float dpValue) {
 		return (int) (dpValue * scale + 0.5f) ;
 	}
 
@@ -698,14 +701,14 @@ public class BodyMap extends ImageView {
 				for(int i = 0 ; i < mArrayList.size() ; i ++ ) {
 					Log.i("tag" , "iter" + mArrayList.get(i).x) ;
 					if(i == 0) {
-						tempPath.moveTo(px2dip(getContext() , computeTopx(mArrayList.get(i).x)) ,
-								px2dip(getContext() , computeTopx(mArrayList.get(i).y))) ;
+						tempPath.moveTo(dip2px(getContext() , computeToDP(mArrayList.get(i).x)) ,
+								dip2px(getContext() , computeToDP(mArrayList.get(i).y))) ;
 					}
-					tempPath.lineTo(px2dip(getContext() , computeTopx(mArrayList.get(i).x)) ,
-							px2dip(getContext() , computeTopx(mArrayList.get(i).y))) ;
+					tempPath.lineTo(dip2px(getContext() , computeToDP(mArrayList.get(i).x)) ,
+							dip2px(getContext() , computeToDP(mArrayList.get(i).y))) ;
 					if(i == mArrayList.size() - 1) {
-						tempPath.lineTo(px2dip(getContext() , computeTopx(mArrayList.get(0).x)) ,
-								px2dip(getContext() , computeTopx(mArrayList.get(0).y))) ;
+						tempPath.lineTo(dip2px(getContext() , computeToDP(mArrayList.get(0).x)) ,
+								dip2px(getContext() , computeToDP(mArrayList.get(0).y))) ;
 					}
 //					if(i == 0) {
 //						tempPath.moveTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
