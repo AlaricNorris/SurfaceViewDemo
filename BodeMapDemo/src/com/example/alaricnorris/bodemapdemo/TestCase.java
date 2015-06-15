@@ -14,6 +14,7 @@ import java.util.LinkedHashMap ;
 import android.graphics.Point ;
 import android.test.AndroidTestCase ;
 import android.util.Log ;
+import com.example.alaricnorris.bodemapdemo.widget.BodyMap ;
 import com.example.alaricnorris.bodemapdemo.widget.BodyParams ;
 import com.google.gson.Gson ;
 
@@ -39,8 +40,25 @@ import com.google.gson.Gson ;
 public class TestCase extends AndroidTestCase {
 
 	public void testParse() {
-		testToJson() ;
+//		testToJson() ;
 //		testFromJson() ;
+		testasdf() ;
+	}
+
+	/**
+	 * 	testasdf:()
+	 *  ──────────────────────────────────	
+	 *	@version	Ver 1.0	
+	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
+	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
+	 * 	Modified By 	20144L151		 2015-6-15下午8:50:20
+	 *	Modifications:	TODO
+	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
+	 */
+	private void testasdf() {
+		int dpValue = 100 ;
+		Log.i("tag" , "" + BodyMap.dip2px(getContext() , dpValue)) ;
+		Log.i("tag" , "" + BodyMap.px2dip(getContext() , BodyMap.dip2px(getContext() , dpValue))) ;
 	}
 
 	/**

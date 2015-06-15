@@ -559,6 +559,17 @@ public class BodyMap extends ImageView {
 		final float scale = context.getResources().getDisplayMetrics().density ;
 		return (int) (pxValue * scale + 0.5f) ;
 	}*/
+	/**
+	 * 	当前使用的为1280*720 即xhdpi 即density=2
+	 * 	float			:		scale	
+	 * 	@since Ver 1.0
+	 */
+	public static final float scale = 2 ;
+
+	public static int computeTopx(float dpValue) {
+		return (int) (dpValue * scale + 0.5f) ;
+	}
+
 	/** 
 	 * 根据手机的分辨率从 dp 的单位 转成为 px(像素) 
 	 */
@@ -687,12 +698,22 @@ public class BodyMap extends ImageView {
 				for(int i = 0 ; i < mArrayList.size() ; i ++ ) {
 					Log.i("tag" , "iter" + mArrayList.get(i).x) ;
 					if(i == 0) {
-						tempPath.moveTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
+						tempPath.moveTo(px2dip(getContext() , computeTopx(mArrayList.get(i).x)) ,
+								px2dip(getContext() , computeTopx(mArrayList.get(i).y))) ;
 					}
-					tempPath.lineTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
+					tempPath.lineTo(px2dip(getContext() , computeTopx(mArrayList.get(i).x)) ,
+							px2dip(getContext() , computeTopx(mArrayList.get(i).y))) ;
 					if(i == mArrayList.size() - 1) {
-						tempPath.lineTo(mArrayList.get(0).x , mArrayList.get(0).y) ;
+						tempPath.lineTo(px2dip(getContext() , computeTopx(mArrayList.get(0).x)) ,
+								px2dip(getContext() , computeTopx(mArrayList.get(0).y))) ;
 					}
+//					if(i == 0) {
+//						tempPath.moveTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
+//					}
+//					tempPath.lineTo(mArrayList.get(i).x , mArrayList.get(i).y) ;
+//					if(i == mArrayList.size() - 1) {
+//						tempPath.lineTo(mArrayList.get(0).x , mArrayList.get(0).y) ;
+//					}
 				}
 				tempPath.transform(super.getImageMatrix()) ;
 				hasTransformed = true ;
