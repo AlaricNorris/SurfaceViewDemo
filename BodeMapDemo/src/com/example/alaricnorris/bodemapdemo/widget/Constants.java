@@ -96,7 +96,7 @@ public class Constants {
 		regions.put(layerNames.get(5) , mPoints) ;
 		mPoints = new ArrayList<Point>() ;
 		// 左腿
-		mPoints.add(new Point(174 , 339)) ;
+		mPoints.add(new Point(174 , 399)) ;
 		mPoints.add(new Point(120 , 337)) ;
 		mPoints.add(new Point(123 , 780)) ;
 		mPoints.add(new Point(166 , 799)) ;
@@ -105,7 +105,7 @@ public class Constants {
 		mPoints.add(new Point(193 , 410)) ;
 		mPoints.add(new Point(245 , 337)) ;
 		mPoints.add(new Point(241 , 777)) ;
-		mPoints.add(new Point(194 , 814)) ;
+		mPoints.add(new Point(194 , 799)) ;
 		mPoints.add(new Point(193 , 410)) ;
 		regions.put(layerNames.get(6) , mPoints) ;
 		mBodyParams_Female_Front = new BodyParams(layerNames , regions) ;

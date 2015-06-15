@@ -12,6 +12,7 @@ package com.example.alaricnorris.bodemapdemo.widget ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.Iterator ;
+import java.util.LinkedHashMap ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 import android.content.Context ;
@@ -250,8 +251,6 @@ public class BodyMap extends ImageView {
 
 	ArrayList<Point> mPoints = new ArrayList<Point>() ;
 
-	HashMap<String , Region> mHashmap_Regions ;
-
 	Region mRegion = new Region() ;
 
 	private boolean isInModifying ;
@@ -356,23 +355,22 @@ public class BodyMap extends ImageView {
 		mRegion.setPath(mPath , mRegion_WholeCanvas) ;
 		mPaint.setColor(mDetectRegionColor) ;
 		if(showDetectRegion) {
-			Log.e("tag" , "drawDetectRegion" + mHashMap_Regions) ;
 //			if(mRegions != null) {
 //				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
 //					mRegions.get(i).setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
 //					drawRegion(canvas , mRegions.get(i) , mPaint) ;
 //				}
 //			}
-			if(mHashMap_Regions != null && mHashmap_Regions.entrySet() != null) {
-				Iterator<Entry<String , Region>> mIterator = mHashmap_Regions.entrySet().iterator() ;
+			if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
+				Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet().iterator() ;
 				int index = 0 ;
 				Log.d("tag" , "mRegion_WholeCanvas" + mRegion_WholeCanvas) ;
 				while(mIterator.hasNext()) {
 					Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 					entry.getValue().setPath(mPaths.get(index) , mRegion_WholeCanvas) ;
-					mPaint.setColor(mDetectRegionColor + 16 * index) ;
+					mPaint.setColor(mDetectRegionColor + (0xFF006666 * index)) ;
 					drawRegion(canvas , entry.getValue() , mPaint) ;
-					Log.e("tag" , "mRegion_WholeCanvas" + mRegion_WholeCanvas) ;
+					Log.e("tag" , "mPaint" + mPaint.getColor()) ;
 					index ++ ;
 				}
 			}
@@ -384,7 +382,7 @@ public class BodyMap extends ImageView {
 //					drawRegion(canvas , tempRegion , mPaint) ;
 //				}
 //			}
-			drawRegion(canvas , mRegion , mPaint) ;
+//			drawRegion(canvas , mRegion , mPaint) ;
 		}
 	}
 
@@ -606,7 +604,7 @@ public class BodyMap extends ImageView {
 
 	private ArrayList<Region> mRegions = new ArrayList<Region>() ;
 
-	private HashMap<String , Region> mHashMap_Regions = new HashMap<String , Region>() ;
+	private LinkedHashMap<String , Region> mHashMap_Regions = new LinkedHashMap<String , Region>() ;
 
 	private ArrayList<Path> mPaths = new ArrayList<Path>() ;
 
@@ -675,7 +673,7 @@ public class BodyMap extends ImageView {
 				.entrySet().iterator() ;
 		mRegions = new ArrayList<Region>() ;
 		mPaths = new ArrayList<Path>() ;
-		mHashMap_Regions = new HashMap<String , Region>() ;
+		mHashMap_Regions = new LinkedHashMap<String , Region>() ;
 		int index = 0 ;
 		while(regionsIterator.hasNext()) {
 			Entry<String , ArrayList<Point>> entry = (Entry<String , ArrayList<Point>>) regionsIterator
