@@ -202,7 +202,6 @@ public class BodyMap extends ImageView {
 				mPath.lineTo(mPoints.get(0).x , mPoints.get(0).y) ;
 			}
 		}
-		mPath.transform(super.getImageMatrix()) ;
 		try {
 			if(mImageLayersNames != null && mImageLayersNames.length > 0) {
 				for(int i = 0 ; i < mImageLayersNames.length ; i ++ ) {
@@ -247,8 +246,6 @@ public class BodyMap extends ImageView {
 		this(context , null) ;
 	}
 
-	HashMap<String , ArrayList<Point>> mHashmap_RegionPoints ;
-
 	ArrayList<Point> mPoints = new ArrayList<Point>() ;
 
 	HashMap<String , Region> mHashmap_Regions ;
@@ -267,6 +264,9 @@ public class BodyMap extends ImageView {
 		super.onDraw(canvas) ;
 		if(isInModifying) {
 			return ;
+		}
+		if(mRegion_WholeCanvas == null) {
+			mRegion_WholeCanvas = new Region(0 , 0 , getWidth() , getHeight()) ;
 		}
 //		if(isInEditMode()) {
 //			return ;
@@ -323,6 +323,10 @@ public class BodyMap extends ImageView {
 
 	Path mPath = new Path() ;
 
+	private boolean hasTransformed ;
+
+	Region mRegion_WholeCanvas ;
+
 	/**
 	 * 	customDraw:(绘制检测区域)
 	 *  ──────────────────────────────────
@@ -338,20 +342,40 @@ public class BodyMap extends ImageView {
 		if(mPoints == null) {
 			return ;
 		}
-		mRegion.setPath(mPath , new Region(0 , 0 , getWidth() , getHeight())) ;
+		if( ! hasTransformed) {
+			if(mPaths != null) {
+				for(Path tempPath : mPaths) {
+					tempPath.transform(super.getImageMatrix()) ;
+				}
+			}
+			mPath.transform(super.getImageMatrix()) ;
+			hasTransformed = true ;
+		}
+		mRegion.setPath(mPath , mRegion_WholeCanvas) ;
 		mPaint.setColor(mDetectRegionColor) ;
 		if(true) {
 			Log.i("tag" , "drawDetectRegion" + mRegions) ;
 			if(mRegions != null) {
 				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
+					mRegions.get(i).setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
 					drawRegion(canvas , mRegions.get(i) , mPaint) ;
+				}
+			}
+			if(mHashMap_Regions != null) {
+				Iterator<Entry<String , Region>> mIterator = mHashmap_Regions.entrySet().iterator() ;
+				int index = 0 ;
+				while(mIterator.hasNext()) {
+					Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
+					entry.getValue().setPath(mPaths.get(index) , mRegion_WholeCanvas) ;
+					drawRegion(canvas , entry.getValue() , mPaint) ;
+					index ++ ;
 				}
 			}
 			if(mPaths != null) {
 				for(int i = 0 ; i < mPaths.size() ; i ++ ) {
 					Region tempRegion = new Region() ;
-					tempRegion
-							.setPath(mPaths.get(i) , new Region(0 , 0 , getWidth() , getHeight())) ;
+					tempRegion.setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
+					mRegions.add(tempRegion) ;
 					drawRegion(canvas , tempRegion , mPaint) ;
 				}
 			}
@@ -429,29 +453,65 @@ public class BodyMap extends ImageView {
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN :
 			case MotionEvent.ACTION_MOVE :
-				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-					choosedImageName = mImageLayersNames[0] ;
+				/*if(mRegions != null) {
+					for(Region tempRegion : mRegions) {
+						if(mRegion.contains((int) event.getX() , (int) event.getY())) {
+							choosedImageName = mImageLayersNames[0] ;
+						}
+					}
+				}*/
+				if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
+					Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet()
+							.iterator() ;
+					while(mIterator.hasNext()) {
+						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
+						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
+							choosedImageName = entry.getKey() ;
+							Toast.makeText(getContext() , "asdfasdf" , 0).show() ;
+							break ;
+						}
+						else {
+							choosedImageName = null ;
+						}
+					}
 				}
-				else {
-					choosedImageName = null ;
-				}
-				invalidate() ;
+//				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
+//					choosedImageName = mImageLayersNames[0] ;
+//				}
+//				else {
+//					choosedImageName = null ;
+//				}
 				break ;
 			case MotionEvent.ACTION_UP :
-				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-					// TODO
-					Log.i("tag" , "Bingo") ;
-					if(mHandler != null) {
-						mHandler.sendEmptyMessage(1) ;
+//				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
+//					// TODO
+//					Log.i("tag" , "Bingo") ;
+//					if(mHandler != null) {
+//						mHandler.sendEmptyMessage(1) ;
+//					}
+//					Toast.makeText(getContext() , "Bingo" , 0).show() ;
+//				}
+				if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
+					Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet()
+							.iterator() ;
+					while(mIterator.hasNext()) {
+						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
+						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
+							Log.i("tag" , "Bingo") ;
+							if(mHandler != null) {
+								mHandler.sendEmptyMessage(1) ;
+							}
+							Toast.makeText(getContext() , "Yeah!!!" , 0).show() ;
+							break ;
+						}
 					}
-					Toast.makeText(getContext() , "Bingo" , 0).show() ;
 				}
 				choosedImageName = null ;
-				invalidate() ;
 				break ;
 			default :
 				break ;
 		}
+		invalidate() ;
 		return true ;
 	}
 
@@ -539,6 +599,8 @@ public class BodyMap extends ImageView {
 
 	private ArrayList<Region> mRegions = new ArrayList<Region>() ;
 
+	private HashMap<String , Region> mHashMap_Regions = new HashMap<String , Region>() ;
+
 	private ArrayList<Path> mPaths = new ArrayList<Path>() ;
 
 	/**
@@ -552,7 +614,7 @@ public class BodyMap extends ImageView {
 		}
 		this.mBodyParams = mBodyParams ;
 		parseBodyParams(this.mBodyParams) ;
-		invalidate();
+		invalidate() ;
 	}
 
 	/**
@@ -572,10 +634,41 @@ public class BodyMap extends ImageView {
 		for(int i = 0 ; i < inBodyParams.getLayerNames().size() ; i ++ ) {
 			mImageLayersNames[i] = inBodyParams.getLayerNames().get(i) ;
 		}
+		isInModifying = true ;
+		try {
+			if(mHashMap != null) {
+				Iterator<Entry<String , Bitmap>> mIterator = mHashMap.entrySet().iterator() ;
+				while(mIterator.hasNext()) {
+					Entry<String , Bitmap> entry = (Entry<String , Bitmap>) mIterator.next() ;
+					entry.getValue().recycle() ;
+					Log.i("tag" , "recycle") ;
+				}
+			}
+			mHashMap = null ;
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
+		}
+		try {
+			if(mImageLayersNames != null && mImageLayersNames.length > 0) {
+				mHashMap = new HashMap<String , Bitmap>() ;
+				for(int i = 0 ; i < mImageLayersNames.length ; i ++ ) {
+					mHashMap.put(mImageLayersNames[i] , BitmapFactory.decodeResource(
+							getResources() ,
+							getResources().getIdentifier(mImageLayersNames[i] , "drawable" ,
+									mContext.getPackageName()))) ;
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
+		}
+		isInModifying = false ;
 		Iterator<Entry<String , ArrayList<Point>>> regionsIterator = inBodyParams.getRegions()
 				.entrySet().iterator() ;
 		mRegions = new ArrayList<Region>() ;
 		mPaths = new ArrayList<Path>() ;
+		mHashMap_Regions = new HashMap<String , Region>() ;
 		int index = 0 ;
 		while(regionsIterator.hasNext()) {
 			Entry<String , ArrayList<Point>> entry = (Entry<String , ArrayList<Point>>) regionsIterator
@@ -602,6 +695,8 @@ public class BodyMap extends ImageView {
 				Region tempRegion = new Region() ;
 				tempRegion.setPath(tempPath , new Region(0 , 0 , getWidth() , getHeight())) ;
 				mRegions.add(tempRegion) ;
+				mHashMap_Regions.put(entry.getKey() , tempRegion) ;
+				Log.i("tag" , "mHashMap_Regions" + mHashMap_Regions) ;
 			}
 			index ++ ;
 		}
@@ -644,12 +739,10 @@ public class BodyMap extends ImageView {
 		while(regionsIterator.hasNext()) {
 			Entry<String , ArrayList<Point>> entry = (Entry<String , ArrayList<Point>>) regionsIterator
 					.next() ;
-			if(TextUtils.isEmpty(entry.getKey()) || entry.getKey().length() == 0) {
+			if(TextUtils.isEmpty(entry.getKey()) || entry.getKey().length() == 0)
 				return false ;
-			}
-			if( ! entry.getKey().equals(inBodyParams.getLayerNames().get(index))) {
+			if( ! entry.getKey().equals(inBodyParams.getLayerNames().get(index)))
 				return false ;
-			}
 			index ++ ;
 		}
 		return true ;
