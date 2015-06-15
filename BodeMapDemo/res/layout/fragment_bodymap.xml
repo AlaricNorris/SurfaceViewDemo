@@ -24,4 +24,11 @@
         bodymap:imagesLayers="@array/imagesLayers"
         bodymap:showdetectRegion="false" />
 
+    <Switch
+        android:id="@+id/switch_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="showRegion" />
+
 </RelativeLayout>

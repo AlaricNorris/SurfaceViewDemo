@@ -14,10 +14,6 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Map.Entry ;
-import com.example.alaricnorris.bodemapdemo.R ;
-import com.example.alaricnorris.bodemapdemo.R.drawable ;
-import com.example.alaricnorris.bodemapdemo.R.id ;
-import com.example.alaricnorris.bodemapdemo.R.styleable ;
 import android.content.Context ;
 import android.content.res.TypedArray ;
 import android.graphics.Bitmap ;
@@ -39,6 +35,7 @@ import android.util.Log ;
 import android.view.MotionEvent ;
 import android.widget.ImageView ;
 import android.widget.Toast ;
+import com.example.alaricnorris.bodemapdemo.R ;
 
 /**
  *	ClassName:	BodyMayImageView
@@ -344,9 +341,9 @@ public class BodyMap extends ImageView {
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
 	private void drawDetectRegion(Canvas canvas) {
-		if(mPoints == null) {
-			return ;
-		}
+//		if(mPoints == null) {
+//			return ;
+//		}
 		if( ! hasTransformed) {
 			if(mPaths != null) {
 				for(Path tempPath : mPaths) {
@@ -359,31 +356,34 @@ public class BodyMap extends ImageView {
 		mRegion.setPath(mPath , mRegion_WholeCanvas) ;
 		mPaint.setColor(mDetectRegionColor) ;
 		if(showDetectRegion) {
-			Log.i("tag" , "drawDetectRegion" + mRegions) ;
-			if(mRegions != null) {
-				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
-					mRegions.get(i).setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
-					drawRegion(canvas , mRegions.get(i) , mPaint) ;
-				}
-			}
-			if(mHashMap_Regions != null) {
+			Log.e("tag" , "drawDetectRegion" + mHashMap_Regions) ;
+//			if(mRegions != null) {
+//				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
+//					mRegions.get(i).setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
+//					drawRegion(canvas , mRegions.get(i) , mPaint) ;
+//				}
+//			}
+			if(mHashMap_Regions != null && mHashmap_Regions.entrySet() != null) {
 				Iterator<Entry<String , Region>> mIterator = mHashmap_Regions.entrySet().iterator() ;
 				int index = 0 ;
+				Log.d("tag" , "mRegion_WholeCanvas" + mRegion_WholeCanvas) ;
 				while(mIterator.hasNext()) {
 					Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 					entry.getValue().setPath(mPaths.get(index) , mRegion_WholeCanvas) ;
+					mPaint.setColor(mDetectRegionColor + 16 * index) ;
 					drawRegion(canvas , entry.getValue() , mPaint) ;
+					Log.e("tag" , "mRegion_WholeCanvas" + mRegion_WholeCanvas) ;
 					index ++ ;
 				}
 			}
-			if(mPaths != null) {
-				for(int i = 0 ; i < mPaths.size() ; i ++ ) {
-					Region tempRegion = new Region() ;
-					tempRegion.setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
-					mRegions.add(tempRegion) ;
-					drawRegion(canvas , tempRegion , mPaint) ;
-				}
-			}
+//			if(mPaths != null) {
+//				for(int i = 0 ; i < mPaths.size() ; i ++ ) {
+//					Region tempRegion = new Region() ;
+//					tempRegion.setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
+//					mRegions.add(tempRegion) ;
+//					drawRegion(canvas , tempRegion , mPaint) ;
+//				}
+//			}
 			drawRegion(canvas , mRegion , mPaint) ;
 		}
 	}
@@ -697,6 +697,7 @@ public class BodyMap extends ImageView {
 					}
 				}
 				tempPath.transform(super.getImageMatrix()) ;
+				hasTransformed = true ;
 				mPaths.add(tempPath) ;
 				Log.i("tag" , "tempPath" + tempPath.isEmpty()) ;
 				Region tempRegion = new Region() ;
@@ -753,5 +754,22 @@ public class BodyMap extends ImageView {
 			index ++ ;
 		}
 		return true ;
+	}
+
+	/**
+	 * 	showDetectRegion
+	 * 	@return  	the showDetectRegion
+	 */
+	public boolean isShowDetectRegion() {
+		return showDetectRegion ;
+	}
+
+	/**
+	 *	showDetectRegion
+	 *	@param   showDetectRegion    the showDetectRegion to set
+	 */
+	public void setShowDetectRegion(boolean showDetectRegion) {
+		this.showDetectRegion = showDetectRegion ;
+		invalidate() ;
 	}
 }

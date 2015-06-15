@@ -105,7 +105,7 @@ public class Constants {
 		mPoints.add(new Point(193 , 410)) ;
 		mPoints.add(new Point(245 , 337)) ;
 		mPoints.add(new Point(241 , 777)) ;
-		mPoints.add(new Point(166 , 814)) ;
+		mPoints.add(new Point(194 , 814)) ;
 		mPoints.add(new Point(193 , 410)) ;
 		regions.put(layerNames.get(6) , mPoints) ;
 		mBodyParams_Female_Front = new BodyParams(layerNames , regions) ;

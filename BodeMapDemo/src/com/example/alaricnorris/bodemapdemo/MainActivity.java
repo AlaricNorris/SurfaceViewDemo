@@ -15,6 +15,9 @@ import android.view.MenuItem ;
 import android.view.View ;
 import android.view.View.OnClickListener ;
 import android.view.ViewGroup ;
+import android.widget.CompoundButton ;
+import android.widget.CompoundButton.OnCheckedChangeListener ;
+import android.widget.Switch ;
 import android.widget.TextView ;
 import android.os.Build ;
 
@@ -52,7 +55,8 @@ public class MainActivity extends Activity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment implements OnClickListener {
+	public static class PlaceholderFragment extends Fragment implements OnClickListener ,
+			OnCheckedChangeListener {
 
 		BodyMap mBodyMap ;
 
@@ -68,6 +72,7 @@ public class MainActivity extends Activity {
 			mBodyMap = (BodyMap) rootView.findViewById(R.id.a) ;
 			mTextView = (TextView) rootView.findViewById(R.id.text) ;
 			mTextView.setOnClickListener(this) ;
+			((Switch) rootView.findViewById(R.id.switch_show)).setOnCheckedChangeListener(this) ;
 			return rootView ;
 		}
 
@@ -85,6 +90,15 @@ public class MainActivity extends Activity {
 			Log.i("tag" , "mBodyParams" + mBodyParams) ;
 			Log.i("tag" , "mBodyParams_Female_Front" + Constants.mBodyParams_Female_Front) ;
 			mBodyMap.setBodyParams(Constants.mBodyParams_Female_Front) ;
+		}
+
+		/**
+		 * 	(non-Javadoc)
+		 * 	@see android.widget.CompoundButton.OnCheckedChangeListener#onCheckedChanged(android.widget.CompoundButton, boolean)
+		 */
+		@ Override
+		public void onCheckedChanged(CompoundButton arg0 , boolean arg1) {
+			mBodyMap.setShowDetectRegion(arg1) ;
 		}
 	}
 }
