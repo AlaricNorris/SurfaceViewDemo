@@ -1,5 +1,8 @@
 package com.example.alaricnorris.bodemapdemo ;
 
+import com.example.alaricnorris.bodemapdemo.widget.BodyMap ;
+import com.example.alaricnorris.bodemapdemo.widget.BodyParams ;
+import com.example.alaricnorris.bodemapdemo.widget.Constants ;
 import com.google.gson.Gson ;
 import android.app.Activity ;
 import android.app.ActionBar ;
@@ -80,7 +83,8 @@ public class MainActivity extends Activity {
 							"{\"layerNames\":[\"female_front_1head\",\"female_front_2neck\"],\"regions\":{\"female_front_1head\":[{\"x\":135,\"y\":0},{\"x\":240,\"y\":0},{\"x\":232,\"y\":125},{\"x\":142,\"y\":125}],\"female_front_2neck\":[{\"x\":171,\"y\":120},{\"x\":165,\"y\":147},{\"x\":140,\"y\":158},{\"x\":188,\"y\":168},{\"x\":239,\"y\":161},{\"x\":210,\"y\":147},{\"x\":200,\"y\":123}]}}" ,
 							BodyParams.class) ;
 			Log.i("tag" , "mBodyParams" + mBodyParams) ;
-			mBodyMap.setBodyParams(mBodyParams) ;
+			Log.i("tag" , "mBodyParams_Female_Front" + Constants.mBodyParams_Female_Front) ;
+			mBodyMap.setBodyParams(Constants.mBodyParams_Female_Front) ;
 		}
 	}
 }

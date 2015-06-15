@@ -14,6 +14,7 @@ import java.util.LinkedHashMap ;
 import android.graphics.Point ;
 import android.test.AndroidTestCase ;
 import android.util.Log ;
+import com.example.alaricnorris.bodemapdemo.widget.BodyParams ;
 import com.google.gson.Gson ;
 
 /**
@@ -38,8 +39,8 @@ import com.google.gson.Gson ;
 public class TestCase extends AndroidTestCase {
 
 	public void testParse() {
-//		testToJson() ;
-		testFromJson() ;
+		testToJson() ;
+//		testFromJson() ;
 	}
 
 	/**
@@ -52,7 +53,7 @@ public class TestCase extends AndroidTestCase {
 	 *	Modifications:	TODO
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
-	private void testFromJson() {
+	public void testFromJson() {
 		Gson mGson = new Gson() ;
 		mGson.fromJson(
 				"{\"layerNames\":[\"female_front_1head\",\"female_front_2neck\"],\"regions\":{\"female_front_1head\":[{\"x\":135,\"y\":0},{\"x\":240,\"y\":0},{\"x\":232,\"y\":125},{\"x\":142,\"y\":125}],\"female_front_2neck\":[{\"x\":171,\"y\":120},{\"x\":165,\"y\":147},{\"x\":140,\"y\":158},{\"x\":188,\"y\":168},{\"x\":239,\"y\":161},{\"x\":210,\"y\":147},{\"x\":200,\"y\":123}]}}" ,
@@ -78,11 +79,15 @@ public class TestCase extends AndroidTestCase {
 	 *
 	 *
 	 */
-	private void testToJson() {
+	public void testToJson() {
 		ArrayList<String> layerNames = new ArrayList<String>() ;
 		layerNames.add("female_front_1head") ;
 		layerNames.add("female_front_2neck") ;
 		layerNames.add("female_front_3breast") ;
+		layerNames.add("female_front_4arms") ;
+		layerNames.add("female_front_5belly") ;
+		layerNames.add("female_front_6pussy") ;
+		layerNames.add("female_front_7legs") ;
 		LinkedHashMap<String , ArrayList<Point>> regions = new LinkedHashMap<String , ArrayList<Point>>() ;
 		ArrayList<Point> mPoints = new ArrayList<Point>() ;
 		mPoints.add(new Point(135 , 0)) ;
@@ -99,7 +104,25 @@ public class TestCase extends AndroidTestCase {
 		mPoints.add(new Point(210 , 147)) ;
 		mPoints.add(new Point(200 , 123)) ;
 		regions.put(layerNames.get(1) , mPoints) ;
-		regions.put(layerNames.get(2) , null) ;
+		mPoints = new ArrayList<Point>() ;
+		mPoints.add(new Point(133 , 153)) ;
+		mPoints.add(new Point(246 , 153)) ;
+		mPoints.add(new Point(240 , 229)) ;
+		mPoints.add(new Point(132 , 231)) ;
+		regions.put(layerNames.get(2) , mPoints) ;
+		regions.put(layerNames.get(3) , new ArrayList<Point>()) ;
+		mPoints = new ArrayList<Point>() ;
+		mPoints.add(new Point(139 , 255)) ;
+		mPoints.add(new Point(232 , 255)) ;
+		mPoints.add(new Point(245 , 337)) ;
+		mPoints.add(new Point(120 , 337)) ;
+		regions.put(layerNames.get(4) , mPoints) ;
+		mPoints = new ArrayList<Point>() ;
+		mPoints.add(new Point(120 , 337)) ;
+		mPoints.add(new Point(245 , 337)) ;
+		mPoints.add(new Point(174 , 399)) ;
+		regions.put(layerNames.get(5) , mPoints) ;
+		regions.put(layerNames.get(6) , new ArrayList<Point>()) ;
 		BodyParams mBodyParams = new BodyParams(layerNames , regions) ;
 		Gson mGson = new Gson() ;
 		Log.i("tag" , "" + mGson.toJson(mBodyParams)) ;

@@ -9,10 +9,10 @@
         android:layout_height="wrap_content"
         android:text="@string/tttt" />
 
-    <com.example.alaricnorris.bodemapdemo.BodyMap
+    <com.example.alaricnorris.bodemapdemo.widget.BodyMap
         android:id="@+id/a"
-        android:layout_width="400dip"
-        android:layout_height="400dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"

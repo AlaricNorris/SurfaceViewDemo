@@ -7,7 +7,7 @@
  *   		 2015-6-14 		AlaricNorris
  *	Copyright (c) 2015, TNT All Rights Reserved.
  */
-package com.example.alaricnorris.bodemapdemo ;
+package com.example.alaricnorris.bodemapdemo.widget ;
 
 import java.util.ArrayList ;
 import java.util.LinkedHashMap ;

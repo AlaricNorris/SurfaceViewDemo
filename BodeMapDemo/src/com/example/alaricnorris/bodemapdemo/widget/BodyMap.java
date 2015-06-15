@@ -7,13 +7,17 @@
  *   		 2015-6-9 		20144L151
  *	Copyright (c) 2015, TNT All Rights Reserved.
  */
-package com.example.alaricnorris.bodemapdemo ;
+package com.example.alaricnorris.bodemapdemo.widget ;
 
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Map.Entry ;
+import com.example.alaricnorris.bodemapdemo.R ;
+import com.example.alaricnorris.bodemapdemo.R.drawable ;
+import com.example.alaricnorris.bodemapdemo.R.id ;
+import com.example.alaricnorris.bodemapdemo.R.styleable ;
 import android.content.Context ;
 import android.content.res.TypedArray ;
 import android.graphics.Bitmap ;
@@ -28,6 +32,7 @@ import android.graphics.Rect ;
 import android.graphics.Region ;
 import android.graphics.RegionIterator ;
 import android.os.Handler ;
+import android.os.Message ;
 import android.text.TextUtils ;
 import android.util.AttributeSet ;
 import android.util.Log ;
@@ -353,7 +358,7 @@ public class BodyMap extends ImageView {
 		}
 		mRegion.setPath(mPath , mRegion_WholeCanvas) ;
 		mPaint.setColor(mDetectRegionColor) ;
-		if(true) {
+		if(showDetectRegion) {
 			Log.i("tag" , "drawDetectRegion" + mRegions) ;
 			if(mRegions != null) {
 				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
@@ -467,7 +472,7 @@ public class BodyMap extends ImageView {
 						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
 							choosedImageName = entry.getKey() ;
-							Toast.makeText(getContext() , "asdfasdf" , 0).show() ;
+							Toast.makeText(getContext() , choosedImageName , 0).show() ;
 							break ;
 						}
 						else {
@@ -497,11 +502,13 @@ public class BodyMap extends ImageView {
 					while(mIterator.hasNext()) {
 						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
-							Log.i("tag" , "Bingo") ;
+							Log.i("tag" , entry.getKey() + "Yeah!!!") ;
 							if(mHandler != null) {
-								mHandler.sendEmptyMessage(1) ;
+								Message message = new Message() ;
+								message.setData(null) ;
+								mHandler.sendMessage(message) ;
 							}
-							Toast.makeText(getContext() , "Yeah!!!" , 0).show() ;
+							Toast.makeText(getContext() , entry.getKey() + "Yeah!!!" , 0).show() ;
 							break ;
 						}
 					}

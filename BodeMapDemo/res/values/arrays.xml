@@ -5,6 +5,10 @@
         <item>female_front_1head</item>
         <item>female_front_2neck</item>
         <item>female_front_3breast</item>
+        <item>female_front_4arms</item>
+        <item>female_front_5belly</item>
+        <item>female_front_6pussy</item>
+        <item>female_front_7legs</item>
     </string-array>
 
     <integer-array name="XCoordinates">
