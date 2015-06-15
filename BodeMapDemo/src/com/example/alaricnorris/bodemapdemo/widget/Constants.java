@@ -40,13 +40,13 @@ public class Constants {
 	public static BodyParams mBodyParams_Female_Front ;
 	static {
 		ArrayList<String> layerNames = new ArrayList<String>() ;
-		layerNames.add("female_front_1head") ;
-		layerNames.add("female_front_2neck") ;
-		layerNames.add("female_front_3breast") ;
-		layerNames.add("female_front_4arms") ;
-		layerNames.add("female_front_5belly") ;
-		layerNames.add("female_front_6pussy") ;
-		layerNames.add("female_front_7legs") ;
+		layerNames.add("body_part_female_front_1head") ;
+		layerNames.add("body_part_female_front_2neck") ;
+		layerNames.add("body_part_female_front_3breast") ;
+		layerNames.add("body_part_female_front_4arms") ;
+		layerNames.add("body_part_female_front_5belly") ;
+		layerNames.add("body_part_female_front_6underpants") ;
+		layerNames.add("body_part_female_front_7legs") ;
 		LinkedHashMap<String , ArrayList<Point>> regions = new LinkedHashMap<String , ArrayList<Point>>() ;
 		ArrayList<Point> mPoints = new ArrayList<Point>() ;
 		mPoints.add(new Point(135 , 0)) ;

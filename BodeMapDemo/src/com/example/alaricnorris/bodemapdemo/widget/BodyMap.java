@@ -312,7 +312,7 @@ public class BodyMap extends ImageView {
 	 */
 	private void drawBody(Canvas canvas) {
 		mPaint.setStyle(Paint.Style.FILL) ;//设置填满  
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.body_male_front) ;
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.dddbody_male_front) ;
 //		mRect_Bound.left = mWidth / 2 - mImage.getWidth() / 2 ;
 //		mRect_Bound.right = mWidth / 2 + mImage.getWidth() / 2 ;
 //		mRect_Bound.top = (mHeight) / 2 - mImage.getHeight() / 2 ;
