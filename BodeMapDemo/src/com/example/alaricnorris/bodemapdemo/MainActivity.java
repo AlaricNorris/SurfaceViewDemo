@@ -17,6 +17,7 @@ import android.view.View.OnClickListener ;
 import android.view.ViewGroup ;
 import android.widget.CompoundButton ;
 import android.widget.CompoundButton.OnCheckedChangeListener ;
+import android.widget.Button ;
 import android.widget.Switch ;
 import android.widget.TextView ;
 import android.os.Build ;
@@ -60,7 +61,7 @@ public class MainActivity extends Activity {
 
 		BodyMap mBodyMap ;
 
-		TextView mTextView ;
+		Button mButton ;
 
 		public PlaceholderFragment() {
 		}
@@ -70,8 +71,8 @@ public class MainActivity extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_bodymap , container , false) ;
 			mBodyMap = (BodyMap) rootView.findViewById(R.id.a) ;
-			mTextView = (TextView) rootView.findViewById(R.id.text) ;
-			mTextView.setOnClickListener(this) ;
+			mButton = (Button) rootView.findViewById(R.id.btn) ;
+			mButton.setOnClickListener(this) ;
 			((Switch) rootView.findViewById(R.id.switch_show)).setOnCheckedChangeListener(this) ;
 			return rootView ;
 		}
