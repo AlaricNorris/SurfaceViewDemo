@@ -1,26 +1,26 @@
 package com.example.alaricnorris.bodemapdemo ;
 
+import java.util.Random ;
+import android.app.Activity ;
+import android.app.Fragment ;
+import android.graphics.BitmapFactory ;
+import android.os.Bundle ;
+import android.util.Log ;
+import android.view.LayoutInflater ;
+import android.view.View ;
+import android.view.View.OnClickListener ;
+import android.view.ViewGroup ;
+import android.widget.AdapterView ;
+import android.widget.ArrayAdapter ;
+import android.widget.Button ;
+import android.widget.CompoundButton ;
+import android.widget.CompoundButton.OnCheckedChangeListener ;
+import android.widget.Spinner ;
+import android.widget.Switch ;
 import com.example.alaricnorris.bodemapdemo.widget.BodyMap ;
 import com.example.alaricnorris.bodemapdemo.widget.BodyParams ;
 import com.example.alaricnorris.bodemapdemo.widget.Constants ;
 import com.google.gson.Gson ;
-import android.app.Activity ;
-import android.app.ActionBar ;
-import android.app.Fragment ;
-import android.os.Bundle ;
-import android.util.Log ;
-import android.view.LayoutInflater ;
-import android.view.Menu ;
-import android.view.MenuItem ;
-import android.view.View ;
-import android.view.View.OnClickListener ;
-import android.view.ViewGroup ;
-import android.widget.CompoundButton ;
-import android.widget.CompoundButton.OnCheckedChangeListener ;
-import android.widget.Button ;
-import android.widget.Switch ;
-import android.widget.TextView ;
-import android.os.Build ;
 
 public class MainActivity extends Activity {
 
@@ -34,25 +34,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	@ Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main , menu) ;
-		return true ;
-	}
-
-	@ Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId() ;
-		if(id == R.id.action_settings) {
-			return true ;
-		}
-		return super.onOptionsItemSelected(item) ;
-	}
-
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -63,6 +44,11 @@ public class MainActivity extends Activity {
 
 		Button mButton ;
 
+		Button mButton_Random ;
+
+		// 声明spinner对象  
+		private Spinner spinner ;
+
 		public PlaceholderFragment() {
 		}
 
@@ -72,8 +58,44 @@ public class MainActivity extends Activity {
 			View rootView = inflater.inflate(R.layout.fragment_bodymap , container , false) ;
 			mBodyMap = (BodyMap) rootView.findViewById(R.id.a) ;
 			mButton = (Button) rootView.findViewById(R.id.btn) ;
+			mButton_Random = (Button) rootView.findViewById(R.id.btn_random) ;
 			mButton.setOnClickListener(this) ;
+			mButton_Random.setOnClickListener(this) ;
 			((Switch) rootView.findViewById(R.id.switch_show)).setOnCheckedChangeListener(this) ;
+			spinner = (Spinner) rootView.findViewById(R.id.spinner) ;
+			//使用数组作为数据源   
+			final String arr[] = new String[] { "body_map_female_front" , "body_map_female_back" ,
+					"body_map_male_front" , "body_map_male_back" } ;
+			// adpater对象  
+			ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity() ,
+					android.R.layout.simple_spinner_item , arr) ;
+			spinner.setAdapter(arrayAdapter) ;
+			// 注册事件  
+			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+				@ Override
+				public void onItemSelected(AdapterView< ? > parent , View view , int position ,
+						long id) {
+					// String content = arr[position];  
+					if(Constants.BodyParams_Female_Front.getImageName().equals(arr[position])) {
+						mBodyMap.setBodyParams(Constants.BodyParams_Female_Front) ;
+					}
+					if(Constants.BodyParams_Female_Back.getImageName().equals(arr[position])) {
+						mBodyMap.setBodyParams(Constants.BodyParams_Female_Back) ;
+					}
+					if(Constants.BodyParams_Male_Front.getImageName().equals(arr[position])) {
+						mBodyMap.setBodyParams(Constants.BodyParams_Male_Front) ;
+					}
+					if(Constants.BodyParams_Male_Back.getImageName().equals(arr[position])) {
+						mBodyMap.setBodyParams(Constants.BodyParams_Male_Back) ;
+					}
+				}
+
+				@ Override
+				public void onNothingSelected(AdapterView< ? > parent) {
+				}
+			}) ;
+			mBodyMap.setBodyParams(Constants.BodyParams_Female_Back);
 			return rootView ;
 		}
 
@@ -83,14 +105,28 @@ public class MainActivity extends Activity {
 		 */
 		@ Override
 		public void onClick(View v) {
-			Gson mGson = new Gson() ;
-			BodyParams mBodyParams = mGson
-					.fromJson(
-							"{\"layerNames\":[\"female_front_1head\",\"female_front_2neck\"],\"regions\":{\"female_front_1head\":[{\"x\":135,\"y\":0},{\"x\":240,\"y\":0},{\"x\":232,\"y\":125},{\"x\":142,\"y\":125}],\"female_front_2neck\":[{\"x\":171,\"y\":120},{\"x\":165,\"y\":147},{\"x\":140,\"y\":158},{\"x\":188,\"y\":168},{\"x\":239,\"y\":161},{\"x\":210,\"y\":147},{\"x\":200,\"y\":123}]}}" ,
-							BodyParams.class) ;
-			Log.i("tag" , "mBodyParams" + mBodyParams) ;
-			Log.i("tag" , "mBodyParams_Female_Front" + Constants.mBodyParams_Female_Front) ;
-			mBodyMap.setBodyParams(Constants.mBodyParams_Female_Front) ;
+			switch(v.getId()) {
+				case R.id.btn :
+					Gson mGson = new Gson() ;
+					BodyParams mBodyParams = mGson
+							.fromJson(
+									"{\"layerNames\":[\"female_front_1head\",\"female_front_2neck\"],\"regions\":{\"female_front_1head\":[{\"x\":135,\"y\":0},{\"x\":240,\"y\":0},{\"x\":232,\"y\":125},{\"x\":142,\"y\":125}],\"female_front_2neck\":[{\"x\":171,\"y\":120},{\"x\":165,\"y\":147},{\"x\":140,\"y\":158},{\"x\":188,\"y\":168},{\"x\":239,\"y\":161},{\"x\":210,\"y\":147},{\"x\":200,\"y\":123}]}}" ,
+									BodyParams.class) ;
+					Log.i("tag" , "mBodyParams" + mBodyParams) ;
+					Log.i("tag" , "mBodyParams_Female_Front" + Constants.BodyParams_Female_Front) ;
+					mBodyMap.setBodyParams(Constants.BodyParams_Female_Front) ;
+					break ;
+				case R.id.btn_random :
+					int[] randomArr = new int[] { R.drawable.body_map_female_back ,
+							R.drawable.body_map_female_front , R.drawable.body_map_male_back ,
+							R.drawable.body_map_male_front } ;
+					int index = new Random().nextInt(3) ;
+					mBodyMap.setImage(BitmapFactory.decodeResource(getResources() ,
+							randomArr[index])) ;
+					break ;
+				default :
+					break ;
+			}
 		}
 
 		/**

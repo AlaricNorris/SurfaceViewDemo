@@ -21,6 +21,7 @@ import android.graphics.Bitmap ;
 import android.graphics.BitmapFactory ;
 import android.graphics.Canvas ;
 import android.graphics.Color ;
+import android.graphics.Matrix ;
 import android.graphics.Paint ;
 import android.graphics.Paint.Style ;
 import android.graphics.Path ;
@@ -32,8 +33,10 @@ import android.os.Handler ;
 import android.os.Message ;
 import android.text.TextUtils ;
 import android.util.AttributeSet ;
+import android.util.DisplayMetrics ;
 import android.util.Log ;
 import android.view.MotionEvent ;
+import android.view.WindowManager ;
 import android.widget.ImageView ;
 import android.widget.Toast ;
 import com.example.alaricnorris.bodemapdemo.R ;
@@ -53,22 +56,14 @@ import com.example.alaricnorris.bodemapdemo.R ;
  *	@Methods	
  *	──────────────────────────────────────────────────────────────────────────────────────────────────────
  * 	Modified By 	20144L151		 2015-6-9下午4:15:07
- *	Modifications:	TODO
+ *	Modifications:	init
  *	──────────────────────────────────────────────────────────────────────────────────────────────────────
  */
 public class BodyMap extends ImageView {
 
 	private Context mContext ;
 
-	public static final int MIN_WIDTH = 320 ;
-
-	public static final int MIN_HEIGHT = 480 ;
-
 	public static final int DEAULT_INNER_MARGIN = 20 ;
-
-	private int mWidth = 0 ;
-
-	private int mHeight = 0 ;
 
 	/**
 	 * 	检测区域颜色
@@ -83,15 +78,6 @@ public class BodyMap extends ImageView {
 	 * 	@since Ver 1.0
 	 */
 	private boolean showDetectRegion ;
-
-	private String mPreferenceJsonString ;
-
-	/**
-	 * 	人体图绘制的矩形范围
-	 * 	Rect			:		mRect_Bound	
-	 * 	@since Ver 1.0
-	 */
-	private Rect mRect_Bound ;
 
 	/**
 	 * 	画笔
@@ -113,8 +99,10 @@ public class BodyMap extends ImageView {
 	 *	@param   mImage    the mImage to set
 	 */
 	public void setImage(Bitmap mImage) {
-		//TODO
-		this.mBitmap = mImage ;
+		if(mImage != null) {
+			this.mBitmap = mImage ;
+			super.setImageBitmap(mBitmap) ;
+		}
 		requestLayout() ;
 	}
 
@@ -127,55 +115,27 @@ public class BodyMap extends ImageView {
 	public BodyMap(Context context , AttributeSet attrs , int defStyle) {
 		super(context , attrs , defStyle) ;
 		mContext = context ;
+		WindowManager mWindowManager = (WindowManager) mContext
+				.getSystemService(Context.WINDOW_SERVICE) ;
+		DisplayMetrics outMetrics = new DisplayMetrics() ;
+		mWindowManager.getDefaultDisplay().getMetrics(outMetrics) ;
+		mRegion_WholeCanvas = new Region(0 , 0 , outMetrics.widthPixels , outMetrics.heightPixels) ;
 		if(isInEditMode()) {
 			return ;
 		}
 		TypedArray mTypedArray = mContext.obtainStyledAttributes(attrs , R.styleable.BodyMap) ;
-		/*int n = mTypedArray.getIndexCount() ;
-		for(int i = 0 ; i < n ; i ++ ) {
-			int attrIndex = mTypedArray.getIndex(i) ;
-			switch(attrIndex) {
-				case R.styleable.BodyMap_image :
-					mBitmap = BitmapFactory.decodeResource(getResources() ,
-							mTypedArray.getResourceId(attrIndex , 0)) ;
-					break ;
-				case R.styleable.BodyMap_showdetectRegion :
-					showDetectRegion = mTypedArray.getBoolean(attrIndex , false) ;
-					break ;
-				case R.styleable.BodyMap_detectRegionColor :
-					// 默认颜色设置为黑色  
-					mDetectRegionColor = mTypedArray.getColor(attrIndex , Color.LTGRAY) ;
-					break ;
-				case R.styleable.BodyMap_imagesLayers :
-					mImageLayersNames = getResources().getStringArray(
-							mTypedArray.getResourceId(attrIndex , 0)) ;
-					break ;
-				case R.styleable.BodyMap_XCoordinates :
-					XCoordinates = getResources().getIntArray(
-							mTypedArray.getResourceId(attrIndex , 0)) ;
-					break ;
-				case R.styleable.BodyMap_YCoordinates :
-					YCoordinates = getResources().getIntArray(
-							mTypedArray.getResourceId(attrIndex , 0)) ;
-					break ;
-			}
-		}*/
 		Log.i("tag" , "mImageLayersNames:" + mImageLayersNames) ;
 		Log.i("tag" , "---------------------------") ;
 		try {
 			{
-				mBitmap = BitmapFactory.decodeResource(getResources() ,
-						mTypedArray.getResourceId(R.styleable.BodyMap_image , 0)) ;
 				showDetectRegion = mTypedArray.getBoolean(R.styleable.BodyMap_showdetectRegion ,
 						false) ;
 				mDetectRegionColor = mTypedArray.getColor(R.styleable.BodyMap_detectRegionColor ,
 						Color.LTGRAY) ;
 				mImageLayersNames = getResources().getStringArray(
 						mTypedArray.getResourceId(R.styleable.BodyMap_imagesLayers , 0)) ;
-				XCoordinates = getResources().getIntArray(
-						mTypedArray.getResourceId(R.styleable.BodyMap_XCoordinates , 0)) ;
-				YCoordinates = getResources().getIntArray(
-						mTypedArray.getResourceId(R.styleable.BodyMap_YCoordinates , 0)) ;
+				mBitmap = BitmapFactory.decodeResource(getResources() ,
+						mTypedArray.getResourceId(R.styleable.BodyMap_image , 0)) ;
 				if(mBitmap != null) {
 					super.setImageBitmap(mBitmap) ;
 				}
@@ -188,49 +148,34 @@ public class BodyMap extends ImageView {
 		mPaint = new Paint() ;
 		mPaint.setColor(mDetectRegionColor) ;
 		mPaint.setStyle(Style.FILL) ;
-		mRect_Bound = new Rect() ;
-		mPoints = new ArrayList<Point>() ;
-		if(XCoordinates != null && XCoordinates.length > 0) {
-			for(int i = 0 ; i < XCoordinates.length ; i ++ ) {
-				mPoints.add(new Point(XCoordinates[i] , YCoordinates[i])) ;
-			}
-		}
-		for(int i = 0 ; i < mPoints.size() ; i ++ ) {
-			if(i == 0) {
-				mPath.moveTo(mPoints.get(i).x , mPoints.get(i).y) ;
-				continue ;
-			}
-			mPath.lineTo(mPoints.get(i).x , mPoints.get(i).y) ;
-			if(i == mPoints.size() - 1) {
-				mPath.lineTo(mPoints.get(0).x , mPoints.get(0).y) ;
-			}
-		}
 		try {
 			if(mImageLayersNames != null && mImageLayersNames.length > 0) {
 				for(int i = 0 ; i < mImageLayersNames.length ; i ++ ) {
-					mHashMap.put(mImageLayersNames[i] , BitmapFactory.decodeResource(
-							getResources() ,
-							getResources().getIdentifier(mImageLayersNames[i] , "drawable" ,
-									mContext.getPackageName()))) ;
+					mHashMap_BodyPart_Images.put(mImageLayersNames[i] , BitmapFactory
+							.decodeResource(
+									getResources() ,
+									getResources().getIdentifier(mImageLayersNames[i] , "drawable" ,
+											mContext.getPackageName()))) ;
 				}
 			}
 		}
 		catch(Exception e) {
 			e.printStackTrace() ;
 		}
-		Log.i("tag" , "mHashMap" + mHashMap) ;
-		Entry<String , Bitmap> mObject = mHashMap.entrySet().iterator().next() ;
+		Log.e("tag" + "superImageMatrix" , "super" + super.getImageMatrix().toShortString()) ;
+		Log.e("tag" + "isIdentity" , "super" + super.getImageMatrix().isIdentity()) ;
 	}
 
+	/**
+	 * 	图片名集合
+	 * 	String[]			:		mImageLayersNames	
+	 * 	@since Ver 1.0
+	 */
 	private String[] mImageLayersNames ;
 
-	private HashMap<String , Bitmap> mHashMap = new HashMap<String , Bitmap>() ;
+	private HashMap<String , Bitmap> mHashMap_BodyPart_Images = new HashMap<String , Bitmap>() ;
 
 	private String choosedImageName ;
-
-	private int[] XCoordinates ;
-
-	private int[] YCoordinates ;
 
 	/**
 	 * 	Creates a new instance of BodyMayImageView.
@@ -249,11 +194,7 @@ public class BodyMap extends ImageView {
 		this(context , null) ;
 	}
 
-	ArrayList<Point> mPoints = new ArrayList<Point>() ;
-
-	Region mRegion = new Region() ;
-
-	private boolean isInModifying ;
+	private boolean isModifying ;
 
 	/**
 	 * 	(non-Javadoc)
@@ -261,17 +202,14 @@ public class BodyMap extends ImageView {
 	 */
 	@ Override
 	protected void onDraw(Canvas canvas) {
-//		drawBody(canvas) ;
-		super.onDraw(canvas) ;
-		if(isInModifying) {
+		if(isModifying) {
 			return ;
 		}
-		if(mRegion_WholeCanvas == null) {
-			mRegion_WholeCanvas = new Region(0 , 0 , getWidth() , getHeight()) ;
+		super.onDraw(canvas) ;
+		Log.w("tag" , "" + super.getImageMatrix().toShortString()) ;
+		if(isInEditMode()) {
+			return ;
 		}
-//		if(isInEditMode()) {
-//			return ;
-//		}
 		try {
 			drawDetectRegion(canvas) ;
 		}
@@ -289,40 +227,16 @@ public class BodyMap extends ImageView {
 	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 * 	Modified By 	20144L151		 2015-6-13下午4:32:12
-	 *	Modifications:	TODO
+	 *	Modifications:	init
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
 	private void drawChoosedLayer(Canvas canvas) {
 		if(TextUtils.isEmpty(choosedImageName)) {
 			return ;
 		}
-		canvas.drawBitmap(mHashMap.get(choosedImageName) , super.getImageMatrix() , mPaint) ;
+		canvas.drawBitmap(mHashMap_BodyPart_Images.get(choosedImageName) , super.getImageMatrix() ,
+				mPaint) ;
 	}
-
-	/**
-	 * 	drawBody:(画人体图)
-	 *  ──────────────────────────────────
-	 * 	@param canvas	
-	 *	@version	Ver 1.0	
-	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
-	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
-	 * 	Modified By 	20144L151		 2015-6-13下午2:38:32
-	 *	Modifications:	init
-	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
-	 */
-	private void drawBody(Canvas canvas) {
-		mPaint.setStyle(Paint.Style.FILL) ;//设置填满  
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.dddbody_male_front) ;
-//		mRect_Bound.left = mWidth / 2 - mImage.getWidth() / 2 ;
-//		mRect_Bound.right = mWidth / 2 + mImage.getWidth() / 2 ;
-//		mRect_Bound.top = (mHeight) / 2 - mImage.getHeight() / 2 ;
-//		mRect_Bound.bottom = (mHeight) / 2 + mImage.getHeight() / 2 ;
-		mPaint.setColor(mDetectRegionColor) ;
-		canvas.drawRect(mRect_Bound , mPaint) ;
-		canvas.drawBitmap(bitmap , null , mRect_Bound , mPaint) ;
-	}
-
-	Path mPath = new Path() ;
 
 	private boolean hasTransformed ;
 
@@ -331,46 +245,33 @@ public class BodyMap extends ImageView {
 	/**
 	 * 	customDraw:(绘制检测区域)
 	 *  ──────────────────────────────────
-	 * 	@param canvas	
+	 * 	@param 		canvas	
 	 *	@version	Ver 1.0	
 	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 * 	Modified By 	AlaricNorris		 2015-6-11下午11:17:34
-	 *	Modifications:	TODO
+	 *	Modifications:	init
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
 	private void drawDetectRegion(Canvas canvas) {
-//		if(mPoints == null) {
-//			return ;
-//		}
 		if( ! hasTransformed) {
 			if(mPaths != null) {
 				for(Path tempPath : mPaths) {
 					tempPath.transform(super.getImageMatrix()) ;
 				}
 			}
-			mPath.transform(super.getImageMatrix()) ;
 			hasTransformed = true ;
 		}
-		mRegion.setPath(mPath , mRegion_WholeCanvas) ;
 		mPaint.setColor(mDetectRegionColor) ;
 		if(showDetectRegion) {
-//			if(mRegions != null) {
-//				for(int i = 0 ; i < mRegions.size() ; i ++ ) {
-//					mRegions.get(i).setPath(mPaths.get(i) , mRegion_WholeCanvas) ;
-//					drawRegion(canvas , mRegions.get(i) , mPaint) ;
-//				}
-//			}
 			if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
 				Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet().iterator() ;
 				int index = 0 ;
-				Log.d("tag" , "mRegion_WholeCanvas" + mRegion_WholeCanvas) ;
 				while(mIterator.hasNext()) {
 					Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 					entry.getValue().setPath(mPaths.get(index) , mRegion_WholeCanvas) ;
 					mPaint.setColor(mDetectRegionColor + (0xFF006666 * index)) ;
 					drawRegion(canvas , entry.getValue() , mPaint) ;
-					Log.e("tag" , "mPaint" + mPaint.getColor()) ;
 					index ++ ;
 				}
 			}
@@ -382,87 +283,35 @@ public class BodyMap extends ImageView {
 //					drawRegion(canvas , tempRegion , mPaint) ;
 //				}
 //			}
-//			drawRegion(canvas , mRegion , mPaint) ;
 		}
 	}
 
 	/**
 	 * 	drawRegion:()
 	 *  ──────────────────────────────────
-	 * 	@param canvas
-	 * 	@param rgn
-	 * 	@param paint	
+	 * 	@param inCanvas
+	 * 	@param inRegion
+	 * 	@param inPaint	
 	 *	@version	Ver 1.0	
 	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 * 	Modified By 	AlaricNorris		 2015-6-13下午8:36:13
-	 *	Modifications:	TODO
+	 *	Modifications:	init
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
-	private void drawRegion(Canvas canvas , Region rgn , Paint paint) {
-		Log.i("tag" , "drawRegion" + rgn) ;
-		RegionIterator iter = new RegionIterator(rgn) ;
-		Rect r = new Rect() ;
-		while(iter.next(r)) {
-			Log.i("tag" , "Rect" + r.toShortString()) ;
-			canvas.drawRect(r , paint) ;
+	private void drawRegion(Canvas inCanvas , Region inRegion , Paint inPaint) {
+		RegionIterator mRegionIterator = new RegionIterator(inRegion) ;
+		Rect mRect = new Rect() ;
+		while(mRegionIterator.next(mRect)) {
+			inCanvas.drawRect(mRect , inPaint) ;
 		}
 	}
 
-//	@ Override
-//	protected void onMeasure(int widthMeasureSpec , int heightMeasureSpec) {
-//		int widthMode = MeasureSpec.getMode(widthMeasureSpec) ;
-//		int widthSize = MeasureSpec.getSize(widthMeasureSpec) ;
-//		if(widthMode == MeasureSpec.EXACTLY) {
-//			Log.i(getClass().getName() , "width EXACTLY") ;
-//			mWidth = widthSize ;
-//		}
-//		else {
-//			//TODO Rect
-//			if(mImage == null)
-//				mWidth = (int) (getPaddingLeft() + mInnerMargin * 2 + getPaddingRight()) ;
-//			else
-////				mWidth = (int) (getPaddingLeft() + mImage.getWidth() + mInnerMargin * 2 + getPaddingRight()) ;
-//				mWidth = mImage.getWidth() ;
-//		}
-//		int heightMode = MeasureSpec.getMode(heightMeasureSpec) ;
-//		int heightSize = MeasureSpec.getSize(heightMeasureSpec) ;
-//		if(heightMode == MeasureSpec.EXACTLY) {
-//			Log.i(getClass().getName() , "height EXACTLY") ;
-//			mHeight = heightSize ;
-//		}
-//		else {
-//			//TODO Rect
-//			if(mImage == null)
-//				mHeight = (int) (getPaddingTop() + mInnerMargin * 2 + getPaddingBottom()) ;
-//			else
-////				mHeight = (int) (getPaddingTop() + mImage.getHeight() + mInnerMargin * 2 + getPaddingBottom()) ;
-//				mHeight = mImage.getHeight() ;
-//		}
-//		mRect_Bound.left = 0 ;
-//		mRect_Bound.right = mWidth ;
-//		mRect_Bound.top = 0 ;
-//		mRect_Bound.bottom = mHeight ;
-////		mRect_Bound.left = getPaddingLeft() + mInnerMargin ;
-////		mRect_Bound.right = mWidth - getPaddingRight() - mInnerMargin ;
-////		mRect_Bound.top = getPaddingTop() + mInnerMargin ;
-////		mRect_Bound.bottom = mHeight - getPaddingBottom() - mInnerMargin ;
-//		setMeasuredDimension(mWidth , mHeight) ;
-//		ScaleDegreeX = mRect_Bound.width() / mWidth ;
-//		ScaleDegreeY = mRect_Bound.height() / mHeight ;
-//	}
 	@ Override
 	public boolean onTouchEvent(MotionEvent event) {
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN :
 			case MotionEvent.ACTION_MOVE :
-				/*if(mRegions != null) {
-					for(Region tempRegion : mRegions) {
-						if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-							choosedImageName = mImageLayersNames[0] ;
-						}
-					}
-				}*/
 				if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
 					Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet()
 							.iterator() ;
@@ -470,7 +319,7 @@ public class BodyMap extends ImageView {
 						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
 							choosedImageName = entry.getKey() ;
-							Toast.makeText(getContext() , choosedImageName , 0).show() ;
+							Log.d("tag" + "Detect" , "In" + choosedImageName) ;
 							break ;
 						}
 						else {
@@ -478,22 +327,8 @@ public class BodyMap extends ImageView {
 						}
 					}
 				}
-//				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-//					choosedImageName = mImageLayersNames[0] ;
-//				}
-//				else {
-//					choosedImageName = null ;
-//				}
 				break ;
 			case MotionEvent.ACTION_UP :
-//				if(mRegion.contains((int) event.getX() , (int) event.getY())) {
-//					// TODO
-//					Log.i("tag" , "Bingo") ;
-//					if(mHandler != null) {
-//						mHandler.sendEmptyMessage(1) ;
-//					}
-//					Toast.makeText(getContext() , "Bingo" , 0).show() ;
-//				}
 				if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
 					Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet()
 							.iterator() ;
@@ -529,48 +364,39 @@ public class BodyMap extends ImageView {
 	@ Override
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow() ;
-		isInModifying = true ;
+		isModifying = true ;
 		try {
-			if(mHashMap != null) {
-				Iterator<Entry<String , Bitmap>> mIterator = mHashMap.entrySet().iterator() ;
+			if(mHashMap_BodyPart_Images != null) {
+				Iterator<Entry<String , Bitmap>> mIterator = mHashMap_BodyPart_Images.entrySet()
+						.iterator() ;
 				while(mIterator.hasNext()) {
 					Map.Entry<java.lang.String , android.graphics.Bitmap> entry = (Map.Entry<java.lang.String , android.graphics.Bitmap>) mIterator
 							.next() ;
 					entry.getValue().recycle() ;
-					Log.i("tag" , "recycle") ;
 				}
 			}
-			mHashMap = null ;
+			mHashMap_BodyPart_Images = null ;
 		}
 		catch(Exception e) {
 			e.printStackTrace() ;
 		}
-		Log.i("tag" , "onDetachedFromWindow") ;
-		isInModifying = false ;
+		isModifying = false ;
 		System.gc() ;
 	}
 
-	/*private float ScaleDegreeX ;
-
-	private float ScaleDegreeY ;
-
-	//进行不同材质机器的兼容
-	private float toDip(Context context , float pxValue) {
-		final float scale = context.getResources().getDisplayMetrics().density ;
-		return (int) (pxValue * scale + 0.5f) ;
-	}*/
 	/**
 	 * 	当前使用的为1280*720 即xhdpi 即density=2
 	 * 	float			:		scale	
 	 * 	@since Ver 1.0
 	 */
-	public static final float scale = 2 ;
+	public static final float currentDensity = 2 ;
 
 	public static int computeToDP(float pxValue) {
-		return (int) (pxValue / scale + 0.5f) ;
+		return (int) (pxValue / currentDensity + 0.5f) ;
 	}
+
 	public static int computeToPX(float dpValue) {
-		return (int) (dpValue * scale + 0.5f) ;
+		return (int) (dpValue * currentDensity + 0.5f) ;
 	}
 
 	/** 
@@ -602,7 +428,6 @@ public class BodyMap extends ImageView {
 	 *	@param   mImageLayersNames    the mImageLayersNames to set
 	 */
 	public void setmImageLayersNames(String[] mImageLayersNames) {
-		mContext.getResources().getString(R.id.a) ;
 		this.mImageLayersNames = mImageLayersNames ;
 	}
 
@@ -616,22 +441,21 @@ public class BodyMap extends ImageView {
 		return mBodyParams ;
 	}
 
-	private ArrayList<Region> mRegions = new ArrayList<Region>() ;
-
+//	private ArrayList<Region> mRegions = new ArrayList<Region>() ;
 	private LinkedHashMap<String , Region> mHashMap_Regions = new LinkedHashMap<String , Region>() ;
 
 	private ArrayList<Path> mPaths = new ArrayList<Path>() ;
 
 	/**
 	 *	mBodyParams
-	 *	@param   mBodyParams    the mBodyParams to set
+	 *	@param   inBodyParams    the mBodyParams to set
 	 */
-	public void setBodyParams(BodyParams mBodyParams) {
-		if( ! isParamsValid(mBodyParams)) {
+	public void setBodyParams(BodyParams inBodyParams) {
+		if( ! isParamsValid(inBodyParams)) {
 			Toast.makeText(getContext() , "Invalid" , 0).show() ;
 			return ;
 		}
-		this.mBodyParams = mBodyParams ;
+		this.mBodyParams = inBodyParams ;
 		parseBodyParams(this.mBodyParams) ;
 		invalidate() ;
 	}
@@ -644,51 +468,68 @@ public class BodyMap extends ImageView {
 	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 * 	Modified By 	AlaricNorris		 2015-6-14下午11:05:39
-	 *	Modifications:	TODO
+	 *	Modifications:	init
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
 	private void parseBodyParams(BodyParams inBodyParams) {
+		if(inBodyParams == null) {
+			return ;
+		}
 		int size = inBodyParams.getLayerNames().size() ;
 		mImageLayersNames = new String[size] ;
 		for(int i = 0 ; i < inBodyParams.getLayerNames().size() ; i ++ ) {
 			mImageLayersNames[i] = inBodyParams.getLayerNames().get(i) ;
 		}
-		isInModifying = true ;
+		isModifying = true ;
 		try {
-			if(mHashMap != null) {
-				Iterator<Entry<String , Bitmap>> mIterator = mHashMap.entrySet().iterator() ;
+			if(mHashMap_BodyPart_Images != null) {
+				Iterator<Entry<String , Bitmap>> mIterator = mHashMap_BodyPart_Images.entrySet()
+						.iterator() ;
 				while(mIterator.hasNext()) {
 					Entry<String , Bitmap> entry = (Entry<String , Bitmap>) mIterator.next() ;
 					entry.getValue().recycle() ;
-					Log.i("tag" , "recycle") ;
 				}
 			}
-			mHashMap = null ;
+			mHashMap_BodyPart_Images = null ;
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
+		}
+		try {
+			if( ! TextUtils.isEmpty(inBodyParams.getImageName())) {
+				if(mBitmap != null) {
+					mBitmap.recycle() ;
+				}
+				mBitmap = BitmapFactory.decodeResource(
+						getResources() ,
+						getResources().getIdentifier(inBodyParams.getImageName() , "drawable" ,
+								mContext.getPackageName())) ;
+				setImage(mBitmap) ;
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace() ;
 		}
 		try {
 			if(mImageLayersNames != null && mImageLayersNames.length > 0) {
-				mHashMap = new HashMap<String , Bitmap>() ;
+				mHashMap_BodyPart_Images = new HashMap<String , Bitmap>() ;
 				for(int i = 0 ; i < mImageLayersNames.length ; i ++ ) {
-					mHashMap.put(mImageLayersNames[i] , BitmapFactory.decodeResource(
-							getResources() ,
-							getResources().getIdentifier(mImageLayersNames[i] , "drawable" ,
-									mContext.getPackageName()))) ;
+					mHashMap_BodyPart_Images.put(mImageLayersNames[i] , BitmapFactory
+							.decodeResource(
+									getResources() ,
+									getResources().getIdentifier(mImageLayersNames[i] , "drawable" ,
+											mContext.getPackageName()))) ;
 				}
 			}
 		}
 		catch(Exception e) {
 			e.printStackTrace() ;
 		}
-		isInModifying = false ;
+		isModifying = false ;
 		Iterator<Entry<String , ArrayList<Point>>> regionsIterator = inBodyParams.getRegions()
 				.entrySet().iterator() ;
-		mRegions = new ArrayList<Region>() ;
 		mPaths = new ArrayList<Path>() ;
 		mHashMap_Regions = new LinkedHashMap<String , Region>() ;
-		int index = 0 ;
 		while(regionsIterator.hasNext()) {
 			Entry<String , ArrayList<Point>> entry = (Entry<String , ArrayList<Point>>) regionsIterator
 					.next() ;
@@ -699,7 +540,7 @@ public class BodyMap extends ImageView {
 			else {
 				Path tempPath = new Path() ;
 				for(int i = 0 ; i < mArrayList.size() ; i ++ ) {
-					Log.i("tag" , "iter" + mArrayList.get(i).x) ;
+					// 解决屏幕适配问题
 					if(i == 0) {
 						tempPath.moveTo(dip2px(getContext() , computeToDP(mArrayList.get(i).x)) ,
 								dip2px(getContext() , computeToDP(mArrayList.get(i).y))) ;
@@ -721,16 +562,27 @@ public class BodyMap extends ImageView {
 				tempPath.transform(super.getImageMatrix()) ;
 				hasTransformed = true ;
 				mPaths.add(tempPath) ;
-				Log.i("tag" , "tempPath" + tempPath.isEmpty()) ;
 				Region tempRegion = new Region() ;
-				tempRegion.setPath(tempPath , new Region(0 , 0 , getWidth() , getHeight())) ;
-				mRegions.add(tempRegion) ;
+				tempRegion.setPath(tempPath , mRegion_WholeCanvas) ;
+//				mRegions.add(tempRegion) ;
 				mHashMap_Regions.put(entry.getKey() , tempRegion) ;
-				Log.i("tag" , "mHashMap_Regions" + mHashMap_Regions) ;
 			}
-			index ++ ;
 		}
-		Log.i("tag" , "mRegions" + mRegions) ;
+	}
+
+	/**
+	 * 	(non-Javadoc)
+	 * 	@see android.view.View#onLayout(boolean, int, int, int, int)
+	 */
+	@ Override
+	protected void onLayout(boolean changed , int left , int top , int right , int bottom) {
+		super.onLayout(changed , left , top , right , bottom) ;
+		Log.e("tag" + "isIdentity" , "super" + super.getImageMatrix().isIdentity()) ;
+		Log.e("tag" + "superImageMatrix" , "super" + super.getImageMatrix().toShortString()) ;
+		Log.e("tag" + "onLayout" , "onLayout" + left + "|" + top + "|" + right + "|" + bottom) ;
+		if(changed) {
+			super.setFrame(left , top , right , bottom) ;
+		}
 	}
 
 	/**
@@ -742,7 +594,7 @@ public class BodyMap extends ImageView {
 	 * 	@since  	I used to be a programmer like you, then I took an arrow in the knee　
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 * 	Modified By 	AlaricNorris		 2015-6-14下午11:00:52
-	 *	Modifications:	TODO
+	 *	Modifications:	init
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
 	private boolean isParamsValid(BodyParams inBodyParams) {

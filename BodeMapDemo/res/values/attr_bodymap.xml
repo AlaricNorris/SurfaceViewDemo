@@ -3,18 +3,14 @@
 
     <attr name="detectRegionColor" format="color" />
     <attr name="showdetectRegion" format="boolean" />
-    <attr name="image" format="reference" />
     <attr name="imagesLayers" format="reference" />
-    <attr name="XCoordinates" format="reference" />
-    <attr name="YCoordinates" format="reference" />
+    <attr name="image" format="reference" />
 
     <declare-styleable name="BodyMap">
         <attr name="detectRegionColor" />
         <attr name="showdetectRegion" />
-        <attr name="image" />
-        <attr name="XCoordinates" />
-        <attr name="YCoordinates" />
         <attr name="imagesLayers" />
+        <attr name="image" />
     </declare-styleable>
 
 </resources>

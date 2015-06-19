@@ -1,7 +1,7 @@
 /**
  * 	BodyParams.java
  * 	com.example.alaricnorris.bodemapdemo
- * 	Function： 	TODO 
+ * 	Function： 	人体图参数 
  *   ver     date      		author
  * 	──────────────────────────────────
  *   		 2015-6-14 		AlaricNorris
@@ -9,14 +9,14 @@
  */
 package com.example.alaricnorris.bodemapdemo.widget ;
 
+import java.io.Serializable ;
 import java.util.ArrayList ;
 import java.util.LinkedHashMap ;
 import android.graphics.Point ;
 
 /**
  *	ClassName:	BodyParams
- *	Function: 	TODO ADD FUNCTION
- *	Reason:	 	TODO ADD REASON
+ *	Function: 	人体图参数
  *	@author   	AlaricNorris		
  *	@contact  	Norris.sly@gmail.com
  *	@version  	Ver 1.0
@@ -29,14 +29,22 @@ import android.graphics.Point ;
  *	@Methods	
  *	──────────────────────────────────────────────────────────────────────────────────────────────────────
  * 	Modified By 	AlaricNorris		 2015-6-14下午10:25:00
- *	Modifications:	TODO
+ *	Modifications:	init
  *	──────────────────────────────────────────────────────────────────────────────────────────────────────
  */
-public class BodyParams {
+public class BodyParams implements Serializable {
+
+	/**
+	 * 	long			:		serialVersionUID	
+	 * 	@since Ver 1.0
+	 */
+	private static final long serialVersionUID = 1L ;
 
 	private ArrayList<String> layerNames ;
 
 	private LinkedHashMap<String , ArrayList<Point>> regions ;
+
+	private String imageName ;
 
 	/**
 	 * 	Creates a new instance of BodyParams.
@@ -55,6 +63,20 @@ public class BodyParams {
 		super() ;
 		this.layerNames = layerNames ;
 		this.regions = regions ;
+	}
+
+	/**
+	 * 	Creates a new instance of BodyParams.
+	 * 	@param layerNames
+	 * 	@param regions
+	 * 	@param imageName
+	 */
+	public BodyParams(ArrayList<String> layerNames ,
+			LinkedHashMap<String , ArrayList<Point>> regions , String imageName) {
+		super() ;
+		this.layerNames = layerNames ;
+		this.regions = regions ;
+		this.imageName = imageName ;
 	}
 
 	/**
@@ -90,11 +112,28 @@ public class BodyParams {
 	}
 
 	/**
+	 * 	imageName
+	 * 	@return  	the imageName
+	 */
+	public String getImageName() {
+		return imageName ;
+	}
+
+	/**
+	 *	imageName
+	 *	@param   imageName    the imageName to set
+	 */
+	public void setImageName(String imageName) {
+		this.imageName = imageName ;
+	}
+
+	/**
 	 * 	(non-Javadoc)
 	 * 	@see java.lang.Object#toString()
 	 */
 	@ Override
 	public String toString() {
-		return "BodyParams [layerNames=" + layerNames + ", regions=" + regions + "]" ;
+		return "BodyParams [layerNames=" + layerNames + ", regions=" + regions + ", imageName="
+				+ imageName + "]" ;
 	}
 }
