@@ -40,12 +40,33 @@ public class BodyParams implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L ;
 
+	/**
+	 * 	身体部位图片层名称
+	 * 	ArrayList<String>			:		layerNames	
+	 * 	@since Ver 1.0
+	 */
 	private ArrayList<String> layerNames ;
 
+	/**
+	 * 	检测区域(Point列表)
+	 * 	LinkedHashMap<String,ArrayList<Point>>			:		regions	
+	 * 	@since Ver 1.0
+	 */
 	private LinkedHashMap<String , ArrayList<Point>> regions ;
 
+	/**
+	 * 	BundleIndex 用图片名称做Key，Value为身体部位的Index
+	 * 	{@link Constants#MSG_WHAT_PART1_HEAD}
+	 * 	LinkedHashMap<String,Integer>			:		messageBundles	
+	 * 	@since Ver 1.0
+	 */
 	private LinkedHashMap<String , Integer> messageBundles ;
 
+	/**
+	 * 	图片名称
+	 * 	String			:		imageName	
+	 * 	@since Ver 1.0
+	 */
 	private String imageName ;
 
 	/**

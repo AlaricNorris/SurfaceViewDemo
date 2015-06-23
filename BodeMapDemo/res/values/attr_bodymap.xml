@@ -5,12 +5,14 @@
     <attr name="showdetectRegion" format="boolean" />
     <attr name="imagesLayers" format="reference" />
     <attr name="image" format="reference" />
+    <attr name="bodyParam" format="reference" />
 
     <declare-styleable name="BodyMap">
         <attr name="detectRegionColor" />
         <attr name="showdetectRegion" />
         <attr name="imagesLayers" />
         <attr name="image" />
+        <attr name="bodyParam" />
     </declare-styleable>
 
 </resources>

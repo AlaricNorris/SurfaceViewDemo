@@ -13,7 +13,6 @@ import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.LinkedHashMap ;
-import java.util.Map ;
 import java.util.Map.Entry ;
 import android.content.Context ;
 import android.content.res.TypedArray ;
@@ -28,7 +27,6 @@ import android.graphics.Point ;
 import android.graphics.Rect ;
 import android.graphics.Region ;
 import android.graphics.RegionIterator ;
-import android.os.Bundle ;
 import android.os.Handler ;
 import android.os.Message ;
 import android.text.TextUtils ;
@@ -41,6 +39,7 @@ import android.widget.ImageView ;
 import android.widget.Toast ;
 import com.example.alaricnorris.bodemapdemo.BuildConfig ;
 import com.example.alaricnorris.bodemapdemo.R ;
+import com.google.gson.Gson ;
 
 /**
  *	ClassName:	BodyMayImageView
@@ -64,8 +63,6 @@ public class BodyMap extends ImageView {
 
 	private Context mContext ;
 
-	public static final int DEAULT_INNER_MARGIN = 20 ;
-
 	/**
 	 * 	检测区域颜色
 	 * 	int			:		mDetectRegionColor	
@@ -79,6 +76,8 @@ public class BodyMap extends ImageView {
 	 * 	@since Ver 1.0
 	 */
 	private boolean showDetectRegion ;
+
+	private String DefaultBodyParams ;
 
 	/**
 	 * 	画笔
@@ -108,6 +107,34 @@ public class BodyMap extends ImageView {
 	}
 
 	/**
+	 * 	图片名集合
+	 * 	String[]			:		mImageLayersNames	
+	 * 	@since Ver 1.0
+	 */
+	private String[] mImageLayersNames ;
+
+	/**
+	 * 	以图片名为Key 对应的Bitmap为Value
+	 * 	HashMap<String,Bitmap>			:		mHashMap_BodyPart_Images	
+	 * 	@since Ver 1.0
+	 */
+	private HashMap<String , Bitmap> mHashMap_BodyPart_Images = new HashMap<String , Bitmap>() ;
+
+	/**
+	 * 	{@link BodyParams#getMessageBundles()}
+	 * 	HashMap<String,Integer>			:		mHashMap_MessageBundles	
+	 * 	@since Ver 1.0
+	 */
+	private HashMap<String , Integer> mHashMap_MessageBundles = new HashMap<String , Integer>() ;
+
+	/**
+	 * 	碰撞检测到已选择的身体部位对应的图片名称
+	 * 	String			:		choosedImageName	
+	 * 	@since Ver 1.0
+	 */
+	private String choosedImageName ;
+
+	/**
 	 * 	Creates a new instance of BodyMayImageView.
 	 * 	@param context
 	 * 	@param attrs
@@ -129,6 +156,8 @@ public class BodyMap extends ImageView {
 		Log.i("tag" , "---------------------------") ;
 		try {
 			{
+				DefaultBodyParams = mTypedArray.getString(R.styleable.BodyMap_bodyParam) ;
+				setBodyParams(new Gson().fromJson(DefaultBodyParams , BodyParams.class)) ;
 				showDetectRegion = mTypedArray.getBoolean(R.styleable.BodyMap_showdetectRegion ,
 						false) ;
 				mDetectRegionColor = mTypedArray.getColor(R.styleable.BodyMap_detectRegionColor ,
@@ -166,19 +195,6 @@ public class BodyMap extends ImageView {
 	}
 
 	/**
-	 * 	图片名集合
-	 * 	String[]			:		mImageLayersNames	
-	 * 	@since Ver 1.0
-	 */
-	private String[] mImageLayersNames ;
-
-	private HashMap<String , Bitmap> mHashMap_BodyPart_Images = new HashMap<String , Bitmap>() ;
-
-	private HashMap<String , Integer> mHashMap_MessageBundles = new HashMap<String , Integer>() ;
-
-	private String choosedImageName ;
-
-	/**
 	 * 	Creates a new instance of BodyMayImageView.
 	 * 	@param context
 	 * 	@param attrs
@@ -195,7 +211,43 @@ public class BodyMap extends ImageView {
 		this(context , null) ;
 	}
 
-	private boolean isModifying ;
+	/**
+	 * 	(non-Javadoc)
+	 * 	@see android.widget.ImageView#onDetachedFromWindow()
+	 */
+	@ Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow() ;
+		isModifying = true ;
+		try {
+			if(mHashMap_BodyPart_Images != null) {
+				Iterator<Entry<String , Bitmap>> mIterator = mHashMap_BodyPart_Images.entrySet()
+						.iterator() ;
+				while(mIterator.hasNext()) {
+					Entry<String , Bitmap> entry = (Entry<String , Bitmap>) mIterator.next() ;
+					entry.getValue().recycle() ;
+				}
+			}
+			mHashMap_BodyPart_Images = null ;
+		}
+		catch(Exception e) {
+			e.printStackTrace() ;
+		}
+		isModifying = false ;
+		System.gc() ;
+	}
+
+	/**
+	 * 	(non-Javadoc)
+	 * 	@see android.view.View#onLayout(boolean, int, int, int, int)
+	 */
+	@ Override
+	protected void onLayout(boolean changed , int left , int top , int right , int bottom) {
+		super.onLayout(changed , left , top , right , bottom) ;
+		if(changed) {
+			super.setFrame(left , top , right , bottom) ;
+		}
+	}
 
 	/**
 	 * 	(non-Javadoc)
@@ -218,6 +270,8 @@ public class BodyMap extends ImageView {
 		}
 		drawChoosedLayer(canvas) ;
 	}
+
+	private boolean isModifying ;
 
 	/**
 	 * 	drawChoosedLayer:()
@@ -376,33 +430,6 @@ public class BodyMap extends ImageView {
 	 */
 	public void setHandler(Handler mHandler) {
 		this.mHandler = mHandler ;
-	}
-
-	/**
-	 * 	(non-Javadoc)
-	 * 	@see android.widget.ImageView#onDetachedFromWindow()
-	 */
-	@ Override
-	protected void onDetachedFromWindow() {
-		super.onDetachedFromWindow() ;
-		isModifying = true ;
-		try {
-			if(mHashMap_BodyPart_Images != null) {
-				Iterator<Entry<String , Bitmap>> mIterator = mHashMap_BodyPart_Images.entrySet()
-						.iterator() ;
-				while(mIterator.hasNext()) {
-					Map.Entry<java.lang.String , android.graphics.Bitmap> entry = (Map.Entry<java.lang.String , android.graphics.Bitmap>) mIterator
-							.next() ;
-					entry.getValue().recycle() ;
-				}
-			}
-			mHashMap_BodyPart_Images = null ;
-		}
-		catch(Exception e) {
-			e.printStackTrace() ;
-		}
-		isModifying = false ;
-		System.gc() ;
 	}
 
 	/**
@@ -593,18 +620,6 @@ public class BodyMap extends ImageView {
 			return ;
 		}
 		mHashMap_MessageBundles = inBodyParams.getMessageBundles() ;
-	}
-
-	/**
-	 * 	(non-Javadoc)
-	 * 	@see android.view.View#onLayout(boolean, int, int, int, int)
-	 */
-	@ Override
-	protected void onLayout(boolean changed , int left , int top , int right , int bottom) {
-		super.onLayout(changed , left , top , right , bottom) ;
-		if(changed) {
-			super.setFrame(left , top , right , bottom) ;
-		}
 	}
 
 	/**

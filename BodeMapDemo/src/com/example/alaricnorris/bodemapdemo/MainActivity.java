@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
 				public void onNothingSelected(AdapterView< ? > parent) {
 				}
 			}) ;
-			mBodyMap.setBodyParams(Constants.BodyParams_Female_Back) ;
+//			mBodyMap.setBodyParams(Constants.BodyParams_Female_Back) ;
 			return rootView ;
 		}
 

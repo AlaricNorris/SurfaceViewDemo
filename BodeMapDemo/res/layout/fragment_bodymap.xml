@@ -12,6 +12,7 @@
         android:layout_margin="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/body_map_female_front"
+        bodymap:bodyParam="@string/body_param_female_front"
         bodymap:detectRegionColor="@android:color/holo_green_light"
         bodymap:image="@drawable/body_map_female_front"
         bodymap:imagesLayers="@array/imagesLayers"
