@@ -156,8 +156,6 @@ public class BodyMap extends ImageView {
 		Log.i("tag" , "---------------------------") ;
 		try {
 			{
-				DefaultBodyParams = mTypedArray.getString(R.styleable.BodyMap_bodyParam) ;
-				setBodyParams(new Gson().fromJson(DefaultBodyParams , BodyParams.class)) ;
 				showDetectRegion = mTypedArray.getBoolean(R.styleable.BodyMap_showdetectRegion ,
 						false) ;
 				mDetectRegionColor = mTypedArray.getColor(R.styleable.BodyMap_detectRegionColor ,
@@ -169,6 +167,8 @@ public class BodyMap extends ImageView {
 				if(mBitmap != null) {
 					super.setImageBitmap(mBitmap) ;
 				}
+				DefaultBodyParams = mTypedArray.getString(R.styleable.BodyMap_bodyParam) ;
+				setBodyParams(new Gson().fromJson(DefaultBodyParams , BodyParams.class)) ;
 			}
 		}
 		catch(Exception e) {
