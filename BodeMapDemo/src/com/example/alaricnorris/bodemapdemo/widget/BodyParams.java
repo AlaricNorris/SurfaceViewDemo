@@ -44,6 +44,8 @@ public class BodyParams implements Serializable {
 
 	private LinkedHashMap<String , ArrayList<Point>> regions ;
 
+	private LinkedHashMap<String , Integer> messageBundles ;
+
 	private String imageName ;
 
 	/**
@@ -76,6 +78,23 @@ public class BodyParams implements Serializable {
 		super() ;
 		this.layerNames = layerNames ;
 		this.regions = regions ;
+		this.imageName = imageName ;
+	}
+
+	/**
+	 * 	Creates a new instance of BodyParams.
+	 * 	@param layerNames
+	 * 	@param regions
+	 * 	@param messageBundles
+	 * 	@param imageName
+	 */
+	public BodyParams(ArrayList<String> layerNames ,
+			LinkedHashMap<String , ArrayList<Point>> regions ,
+			LinkedHashMap<String , Integer> messageBundles , String imageName) {
+		super() ;
+		this.layerNames = layerNames ;
+		this.regions = regions ;
+		this.messageBundles = messageBundles ;
 		this.imageName = imageName ;
 	}
 
@@ -128,12 +147,28 @@ public class BodyParams implements Serializable {
 	}
 
 	/**
+	 * 	messageBundles
+	 * 	@return  	the messageBundles
+	 */
+	public LinkedHashMap<String , Integer> getMessageBundles() {
+		return messageBundles ;
+	}
+
+	/**
+	 *	messageBundles
+	 *	@param   messageBundles    the messageBundles to set
+	 */
+	public void setMessageBundles(LinkedHashMap<String , Integer> messageBundles) {
+		this.messageBundles = messageBundles ;
+	}
+
+	/**
 	 * 	(non-Javadoc)
 	 * 	@see java.lang.Object#toString()
 	 */
 	@ Override
 	public String toString() {
-		return "BodyParams [layerNames=" + layerNames + ", regions=" + regions + ", imageName="
-				+ imageName + "]" ;
+		return "BodyParams [layerNames=" + layerNames + ", regions=" + regions
+				+ ", messageBundles=" + messageBundles + ", imageName=" + imageName + "]" ;
 	}
 }

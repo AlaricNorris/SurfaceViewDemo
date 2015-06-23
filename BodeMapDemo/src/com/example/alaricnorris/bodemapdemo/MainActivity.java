@@ -5,6 +5,8 @@ import android.app.Activity ;
 import android.app.Fragment ;
 import android.graphics.BitmapFactory ;
 import android.os.Bundle ;
+import android.os.Handler ;
+import android.os.Message ;
 import android.util.Log ;
 import android.view.LayoutInflater ;
 import android.view.View ;
@@ -14,6 +16,7 @@ import android.widget.AdapterView ;
 import android.widget.ArrayAdapter ;
 import android.widget.Button ;
 import android.widget.CompoundButton ;
+import android.widget.Toast ;
 import android.widget.CompoundButton.OnCheckedChangeListener ;
 import android.widget.Spinner ;
 import android.widget.Switch ;
@@ -49,6 +52,45 @@ public class MainActivity extends Activity {
 		// 声明spinner对象  
 		private Spinner spinner ;
 
+		Handler mHandler = new Handler() {
+
+			/**
+			 * 	(non-Javadoc)
+			 * 	@see android.os.Handler#handleMessage(android.os.Message)
+			 */
+			@ Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg) ;
+				if(BuildConfig.DEBUG) {
+					Log.i("tag" + "handleMessage" , msg.toString()) ;
+					Toast.makeText(getActivity() , msg.toString() , 0).show() ;
+				}
+				if(msg == null || msg.what == 0) {
+					return ;
+				}
+				switch(msg.what) {
+					case Constants.MSG_WHAT_PART1_HEAD :
+						break ;
+					case Constants.MSG_WHAT_PART2_NECK :
+						break ;
+					case Constants.MSG_WHAT_PART3_BEEAST :
+						break ;
+					case Constants.MSG_WHAT_PART4_ARMS_LEGS :
+						break ;
+					case Constants.MSG_WHAT_PART5_BELLY :
+						break ;
+					case Constants.MSG_WHAT_PART6_BACK :
+						break ;
+					case Constants.MSG_WHAT_PART7_UNDERPANTS :
+						break ;
+					case Constants.MSG_WHAT_PART8_HIP :
+						break ;
+					default :
+						break ;
+				}
+			}
+		} ;
+
 		public PlaceholderFragment() {
 		}
 
@@ -57,6 +99,7 @@ public class MainActivity extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_bodymap , container , false) ;
 			mBodyMap = (BodyMap) rootView.findViewById(R.id.a) ;
+			mBodyMap.setHandler(mHandler) ;
 			mButton = (Button) rootView.findViewById(R.id.btn) ;
 			mButton_Random = (Button) rootView.findViewById(R.id.btn_random) ;
 			mButton.setOnClickListener(this) ;
@@ -92,7 +135,7 @@ public class MainActivity extends Activity {
 				public void onNothingSelected(AdapterView< ? > parent) {
 				}
 			}) ;
-			mBodyMap.setBodyParams(Constants.BodyParams_Female_Back);
+			mBodyMap.setBodyParams(Constants.BodyParams_Female_Back) ;
 			return rootView ;
 		}
 

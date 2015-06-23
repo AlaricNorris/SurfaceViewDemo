@@ -21,7 +21,6 @@ import android.graphics.Bitmap ;
 import android.graphics.BitmapFactory ;
 import android.graphics.Canvas ;
 import android.graphics.Color ;
-import android.graphics.Matrix ;
 import android.graphics.Paint ;
 import android.graphics.Paint.Style ;
 import android.graphics.Path ;
@@ -29,6 +28,7 @@ import android.graphics.Point ;
 import android.graphics.Rect ;
 import android.graphics.Region ;
 import android.graphics.RegionIterator ;
+import android.os.Bundle ;
 import android.os.Handler ;
 import android.os.Message ;
 import android.text.TextUtils ;
@@ -39,6 +39,7 @@ import android.view.MotionEvent ;
 import android.view.WindowManager ;
 import android.widget.ImageView ;
 import android.widget.Toast ;
+import com.example.alaricnorris.bodemapdemo.BuildConfig ;
 import com.example.alaricnorris.bodemapdemo.R ;
 
 /**
@@ -162,8 +163,6 @@ public class BodyMap extends ImageView {
 		catch(Exception e) {
 			e.printStackTrace() ;
 		}
-		Log.e("tag" + "superImageMatrix" , "super" + super.getImageMatrix().toShortString()) ;
-		Log.e("tag" + "isIdentity" , "super" + super.getImageMatrix().isIdentity()) ;
 	}
 
 	/**
@@ -174,6 +173,8 @@ public class BodyMap extends ImageView {
 	private String[] mImageLayersNames ;
 
 	private HashMap<String , Bitmap> mHashMap_BodyPart_Images = new HashMap<String , Bitmap>() ;
+
+	private HashMap<String , Integer> mHashMap_MessageBundles = new HashMap<String , Integer>() ;
 
 	private String choosedImageName ;
 
@@ -205,11 +206,10 @@ public class BodyMap extends ImageView {
 		if(isModifying) {
 			return ;
 		}
-		super.onDraw(canvas) ;
-		Log.w("tag" , "" + super.getImageMatrix().toShortString()) ;
 		if(isInEditMode()) {
 			return ;
 		}
+		super.onDraw(canvas) ;
 		try {
 			drawDetectRegion(canvas) ;
 		}
@@ -310,6 +310,7 @@ public class BodyMap extends ImageView {
 	@ Override
 	public boolean onTouchEvent(MotionEvent event) {
 		switch(event.getAction()) {
+		// down事件和move事件一致
 			case MotionEvent.ACTION_DOWN :
 			case MotionEvent.ACTION_MOVE :
 				if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
@@ -319,7 +320,9 @@ public class BodyMap extends ImageView {
 						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
 							choosedImageName = entry.getKey() ;
-							Log.d("tag" + "Detect" , "In" + choosedImageName) ;
+							if(BuildConfig.DEBUG) {
+								Log.i("tag" + "Detect" , "In" + choosedImageName) ;
+							}
 							break ;
 						}
 						else {
@@ -329,19 +332,21 @@ public class BodyMap extends ImageView {
 				}
 				break ;
 			case MotionEvent.ACTION_UP :
+				//up事件对已选区域做判断，触发选择事件
 				if(mHashMap_Regions != null && mHashMap_Regions.entrySet() != null) {
 					Iterator<Entry<String , Region>> mIterator = mHashMap_Regions.entrySet()
 							.iterator() ;
 					while(mIterator.hasNext()) {
 						Entry<String , Region> entry = (Entry<String , Region>) mIterator.next() ;
 						if(entry.getValue().contains((int) event.getX() , (int) event.getY())) {
-							Log.i("tag" , entry.getKey() + "Yeah!!!") ;
+							if(BuildConfig.DEBUG) {
+								Log.i("tag" , entry.getKey() + "Yeah!!!") ;
+							}
 							if(mHandler != null) {
 								Message message = new Message() ;
-								message.setData(null) ;
+								message.what = mHashMap_MessageBundles.get(choosedImageName) ;
 								mHandler.sendMessage(message) ;
 							}
-							Toast.makeText(getContext() , entry.getKey() + "Yeah!!!" , 0).show() ;
 							break ;
 						}
 					}
@@ -356,6 +361,22 @@ public class BodyMap extends ImageView {
 	}
 
 	private Handler mHandler ;
+
+	/**
+	 * 	mHandler
+	 * 	@return  	the mHandler
+	 */
+	public Handler getHandler() {
+		return mHandler ;
+	}
+
+	/**
+	 *	mHandler
+	 *	@param   mHandler    the mHandler to set
+	 */
+	public void setHandler(Handler mHandler) {
+		this.mHandler = mHandler ;
+	}
 
 	/**
 	 * 	(non-Javadoc)
@@ -441,7 +462,6 @@ public class BodyMap extends ImageView {
 		return mBodyParams ;
 	}
 
-//	private ArrayList<Region> mRegions = new ArrayList<Region>() ;
 	private LinkedHashMap<String , Region> mHashMap_Regions = new LinkedHashMap<String , Region>() ;
 
 	private ArrayList<Path> mPaths = new ArrayList<Path>() ;
@@ -451,8 +471,8 @@ public class BodyMap extends ImageView {
 	 *	@param   inBodyParams    the mBodyParams to set
 	 */
 	public void setBodyParams(BodyParams inBodyParams) {
-		if( ! isParamsValid(inBodyParams)) {
-			Toast.makeText(getContext() , "Invalid" , 0).show() ;
+		if( ! checkBodyParamsValid(inBodyParams)) {
+			Toast.makeText(getContext() , "InvalidParams" , 0).show() ;
 			return ;
 		}
 		this.mBodyParams = inBodyParams ;
@@ -568,6 +588,11 @@ public class BodyMap extends ImageView {
 				mHashMap_Regions.put(entry.getKey() , tempRegion) ;
 			}
 		}
+		// 添加Handler所需Message参数的HashMap
+		if(inBodyParams.getMessageBundles() == null || inBodyParams.getMessageBundles().size() == 0) {
+			return ;
+		}
+		mHashMap_MessageBundles = inBodyParams.getMessageBundles() ;
 	}
 
 	/**
@@ -577,16 +602,13 @@ public class BodyMap extends ImageView {
 	@ Override
 	protected void onLayout(boolean changed , int left , int top , int right , int bottom) {
 		super.onLayout(changed , left , top , right , bottom) ;
-		Log.e("tag" + "isIdentity" , "super" + super.getImageMatrix().isIdentity()) ;
-		Log.e("tag" + "superImageMatrix" , "super" + super.getImageMatrix().toShortString()) ;
-		Log.e("tag" + "onLayout" , "onLayout" + left + "|" + top + "|" + right + "|" + bottom) ;
 		if(changed) {
 			super.setFrame(left , top , right , bottom) ;
 		}
 	}
 
 	/**
-	 * 	isParamsValid:()
+	 * 	checkBodyParamsValid:()
 	 *  ──────────────────────────────────
 	 * 	@return	
 	 *	@version	Ver 1.0	
@@ -597,7 +619,7 @@ public class BodyMap extends ImageView {
 	 *	Modifications:	init
 	 *	──────────────────────────────────────────────────────────────────────────────────────────────────────
 	 */
-	private boolean isParamsValid(BodyParams inBodyParams) {
+	private boolean checkBodyParamsValid(BodyParams inBodyParams) {
 		if(inBodyParams == null) {
 			return false ;
 		}
