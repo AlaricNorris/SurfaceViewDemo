@@ -63,14 +63,11 @@ public class MainActivity extends Activity {
 			mButton_Random.setOnClickListener(this) ;
 			((Switch) rootView.findViewById(R.id.switch_show)).setOnCheckedChangeListener(this) ;
 			spinner = (Spinner) rootView.findViewById(R.id.spinner) ;
-			//使用数组作为数据源   
 			final String arr[] = new String[] { "body_map_female_front" , "body_map_female_back" ,
 					"body_map_male_front" , "body_map_male_back" } ;
-			// adpater对象  
 			ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity() ,
 					android.R.layout.simple_spinner_item , arr) ;
 			spinner.setAdapter(arrayAdapter) ;
-			// 注册事件  
 			spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 				@ Override
