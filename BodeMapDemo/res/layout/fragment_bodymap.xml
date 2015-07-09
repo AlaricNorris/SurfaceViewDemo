@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bodymap="http://schemas.android.com/apk/res/com.example.alaricnorris.bodemapdemo"
+    xmlns:bodymap="http://schemas.android.com/apk/res/com.example.alaricnorris.bodymapdemo"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.example.alaricnorris.bodemapdemo.widget.BodyMap
+    <com.example.alaricnorris.bodymapdemo.widget.BodyMap
         android:id="@+id/a"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

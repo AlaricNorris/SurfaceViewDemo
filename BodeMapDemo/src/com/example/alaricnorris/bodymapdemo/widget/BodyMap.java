@@ -7,7 +7,7 @@
  *   		 2015-6-9 		20144L151
  *	Copyright (c) 2015, TNT All Rights Reserved.
  */
-package com.example.alaricnorris.bodemapdemo.widget ;
+package com.example.alaricnorris.bodymapdemo.widget ;
 
 import java.util.ArrayList ;
 import java.util.HashMap ;
@@ -37,8 +37,8 @@ import android.view.MotionEvent ;
 import android.view.WindowManager ;
 import android.widget.ImageView ;
 import android.widget.Toast ;
-import com.example.alaricnorris.bodemapdemo.BuildConfig ;
-import com.example.alaricnorris.bodemapdemo.R ;
+import com.example.alaricnorris.bodymapdemo.BuildConfig ;
+import com.example.alaricnorris.bodymapdemo.R ;
 import com.google.gson.Gson ;
 
 /**

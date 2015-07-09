@@ -7,7 +7,7 @@
  *   		 2015-6-14 		AlaricNorris
  *	Copyright (c) 2015, TNT All Rights Reserved.
  */
-package com.example.alaricnorris.bodemapdemo.widget ;
+package com.example.alaricnorris.bodymapdemo.widget ;
 
 import java.io.Serializable ;
 import java.util.ArrayList ;

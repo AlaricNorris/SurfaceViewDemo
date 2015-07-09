@@ -7,7 +7,7 @@
  *   		 2015-6-15 		20144L151
  *	Copyright (c) 2015, TNT All Rights Reserved.
  */
-package com.example.alaricnorris.bodemapdemo.widget ;
+package com.example.alaricnorris.bodymapdemo.widget ;
 
 import java.util.ArrayList ;
 import java.util.LinkedHashMap ;

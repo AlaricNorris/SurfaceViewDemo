@@ -1,4 +1,4 @@
-package com.example.alaricnorris.bodemapdemo ;
+package com.example.alaricnorris.bodymapdemo ;
 
 import java.util.Random ;
 import android.app.Activity ;
@@ -20,9 +20,11 @@ import android.widget.Toast ;
 import android.widget.CompoundButton.OnCheckedChangeListener ;
 import android.widget.Spinner ;
 import android.widget.Switch ;
-import com.example.alaricnorris.bodemapdemo.widget.BodyMap ;
-import com.example.alaricnorris.bodemapdemo.widget.BodyParams ;
-import com.example.alaricnorris.bodemapdemo.widget.Constants ;
+import com.example.alaricnorris.bodymapdemo.BuildConfig ;
+import com.example.alaricnorris.bodymapdemo.R ;
+import com.example.alaricnorris.bodymapdemo.widget.BodyMap ;
+import com.example.alaricnorris.bodymapdemo.widget.BodyParams ;
+import com.example.alaricnorris.bodymapdemo.widget.Constants ;
 import com.google.gson.Gson ;
 
 public class MainActivity extends Activity {

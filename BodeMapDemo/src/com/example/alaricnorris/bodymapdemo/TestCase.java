@@ -7,16 +7,16 @@
  *   		 2015-6-14 		AlaricNorris
  *	Copyright (c) 2015, TNT All Rights Reserved.
  */
-package com.example.alaricnorris.bodemapdemo ;
+package com.example.alaricnorris.bodymapdemo ;
 
 import java.util.ArrayList ;
 import java.util.LinkedHashMap ;
 import android.graphics.Point ;
 import android.test.AndroidTestCase ;
 import android.util.Log ;
-import com.example.alaricnorris.bodemapdemo.widget.BodyMap ;
-import com.example.alaricnorris.bodemapdemo.widget.BodyParams ;
-import com.example.alaricnorris.bodemapdemo.widget.Constants ;
+import com.example.alaricnorris.bodymapdemo.widget.BodyMap ;
+import com.example.alaricnorris.bodymapdemo.widget.BodyParams ;
+import com.example.alaricnorris.bodymapdemo.widget.Constants ;
 import com.google.gson.Gson ;
 
 /**
